@@ -22,7 +22,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { AUTH_TOKEN, BASE_URL } from "../../global/constants";
 import axios from "axios";
 import Toast from "../../global/Toast";
-import { MdDelete } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 const initialValues = {
   category_name: "",
@@ -35,6 +35,7 @@ const categorySchema = yup.object().shape({
 });
 
 function AddCategory() {
+  const navigate = useNavigate();
   const [imageData, setImageData] = useState([]);
   const [message, setMessage] = useState({
     visible: false,
@@ -68,7 +69,7 @@ function AddCategory() {
     axios
       .request(config)
       .then((response) => {
-        const newImages = [...imageData, ...response.data.data.images];
+        const newImages = [...images, ...response.data.data.images];
         setImageData(newImages);
       })
       .catch((error) => {
@@ -107,7 +108,6 @@ function AddCategory() {
     console.log(values);
     let data = JSON.stringify({
       ...values,
-      images: imageData,
     });
 
     let config = {
@@ -128,6 +128,7 @@ function AddCategory() {
           visible: true,
           message: response.data.message,
         });
+        navigate(`/category?id=${response.data.data._id}`);
       })
       .catch((error) => {
         setMessage({
@@ -183,8 +184,8 @@ function AddCategory() {
                   <MenuItem value={"TEST"}>TEST</MenuItem>
                 </Select>
               </FormControl>
-
-              <InputLabel htmlFor="image" className="text-right">
+              {/* Images Uploader*/}
+              {/* <InputLabel htmlFor="image" className="text-right">
                 Image
               </InputLabel>
               <Button
@@ -209,9 +210,10 @@ function AddCategory() {
                   type="file"
                   onChange={(event) => handleImageUpload(event.target.files)}
                 />
-              </Button>
+              </Button> */}
             </Box>
-            <ImageList sx={{ width: "100%", height: "100%" }}>
+            {/* Image Viewer */}
+            {/* <ImageList sx={{ width: "100%", height: "100%" }}>
               <ImageListItem key="Subheader" cols={2}>
                 <ListSubheader component="div">Uploaded Images</ListSubheader>
               </ImageListItem>
@@ -236,7 +238,7 @@ function AddCategory() {
                   />
                 </ImageListItem>
               ))}
-            </ImageList>
+            </ImageList> */}
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
                 Add Category

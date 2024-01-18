@@ -147,6 +147,9 @@ function ViewCategories() {
           "& .MuiDataGrid-columnsContainer, .MuiDataGrid-cell": {
             borderBottom: `1px solid ${colors.primary[300]}`,
           },
+          "& MuiTablePagination-root": {
+            color: `${colors.primary[100]} !important`,
+          },
         }}
       >
         {!loading && (

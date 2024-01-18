@@ -129,11 +129,13 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
   const initialValues = {
     category_name: item.category_name,
     category_type: item.category_type,
+    active: item.active,
   };
 
   const categorySchema = yup.object().shape({
     category_name: yup.string().required("Required"),
     category_type: yup.string().required("Required"),
+    active: yup.boolean().required("Required"),
   });
   return (
     <Modal open={open} onClose={handleClose}>
@@ -164,7 +166,6 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                   name="category_name"
                   error={!!touched.category_name && !!errors.category_name}
                   helperText={touched.category_name && errors.category_name}
-                  sx={{ gridColumn: "span 4" }}
                 />
                 <FormControl fullWidth>
                   <InputLabel>Category Type</InputLabel>
@@ -181,8 +182,23 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                     <MenuItem value={"TEST"}>TEST</MenuItem>
                   </Select>
                 </FormControl>
-
-                <Button
+                <FormControl fullWidth>
+                  <InputLabel>Active</InputLabel>
+                  <Select
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.active}
+                    name="active"
+                    error={!!touched.active && !!errors.active}
+                    helperText={touched.active && errors.active}
+                    label="Active"
+                  >
+                    <MenuItem value={true}>Active</MenuItem>
+                    <MenuItem value={false}>Inactive</MenuItem>
+                  </Select>
+                </FormControl>
+                {/* Image Uploader */}
+                {/* <Button
                   component="label"
                   variant="contained"
                   startIcon={<CloudUploadIcon />}
@@ -205,9 +221,10 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                     type="file"
                     onChange={(event) => handleImageUpload(event.target.files)}
                   />
-                </Button>
+                </Button> */}
               </Box>
-              <ImageList sx={{ width: "100%", height: "100%" }}>
+              {/* Images Viewer */}
+              {/* <ImageList sx={{ width: "100%", height: "100%" }}>
                 <ImageListItem key="Subheader" cols={2}>
                   <ListSubheader component="div">Uploaded Images</ListSubheader>
                 </ImageListItem>
@@ -232,7 +249,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                     />
                   </ImageListItem>
                 ))}
-              </ImageList>
+              </ImageList> */}
               <Box display="flex" justifyContent="end" mt="20px">
                 <Button type="submit" color="secondary" variant="contained">
                   Update Category

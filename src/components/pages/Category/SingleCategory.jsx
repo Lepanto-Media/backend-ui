@@ -1,4 +1,12 @@
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Card,
+  FormControlLabel,
+  IconButton,
+  Switch,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ImageGallery from "react-image-gallery";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -161,6 +169,7 @@ function SingleCategory() {
         handleDelete={handleDelete}
       />
       <Toast data={message} setState={setMessage} />
+
       <Box m="0 20px" sx={{ background: colors.primary[500] }}>
         <Header title="Category" subtitle="View Single Category" />
         <Box
@@ -175,24 +184,14 @@ function SingleCategory() {
             },
           }}
         >
-          <Box
+          <Card
             sx={{
               flex: 1,
-              padding: "3em",
-              borderRight: `1px solid ${colors.primary[600]}`,
-            }}
-          >
-            <ImageGallery
-              items={images}
-              showNav={false}
-              showPlayButton={false}
-              showFullscreenButton={false}
-            />
-          </Box>
-          <Box
-            sx={{
-              flex: 1,
-              width: "80%",
+              maxWidth: {
+                xs: "100%",
+                md: "60%",
+              },
+              padding: "2em",
             }}
           >
             <Box
@@ -215,13 +214,29 @@ function SingleCategory() {
               <Typography variant="p" sx={{ fontSize: "1.5em" }}>
                 ID: {categoryInfo._id}
               </Typography>
+              <Box
+                width="100%"
+                m="0 auto"
+                p="5px"
+                display="flex"
+                justifyContent="center"
+                backgroundColor={
+                  categoryInfo.active
+                    ? colors.greenAccent[600]
+                    : colors.redAccent[700]
+                }
+                borderRadius="5px"
+              >
+                <Typography color={colors.primary[100]} sx={{ ml: "5px" }}>
+                  {categoryInfo.active ? "ACTIVE" : "INACTIVE"}
+                </Typography>
+              </Box>
             </Box>
             <Box
               sx={{
                 display: "flex",
                 justifyContent: "space-evenly",
                 paddingTop: "2em",
-                width: "60%",
               }}
             >
               <IconButton
@@ -251,7 +266,7 @@ function SingleCategory() {
                 <MdDelete fontSize={30} />
               </IconButton>
             </Box>
-          </Box>
+          </Card>
         </Box>
       </Box>
     </>
