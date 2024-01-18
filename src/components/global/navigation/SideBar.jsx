@@ -141,7 +141,7 @@ function SideBar() {
             to="/"
             icon={<RiHome4Line size={iconSize} color={colors.primary[900]} />}
             selected={selected}
-            setSelected={setSelected}
+            setSelected={() => setSelected("Dashboard")}
           />
 
           {/* Products */}
@@ -170,11 +170,11 @@ function SideBar() {
                 <AiOutlinePlus size={iconSize} color={colors.primary[900]} />
               }
               selected={selected}
-              setSelected={setSelected}
+              setSelected={() => setSelected("Category")}
             />
             <Item
               title="View Category"
-              to="/view-category"
+              to="/view-categories"
               icon={
                 <AiOutlineUnorderedList
                   size={iconSize}
@@ -182,7 +182,7 @@ function SideBar() {
                 />
               }
               selected={selected}
-              setSelected={setSelected}
+              setSelected={() => setSelected("Category")}
             />
           </SubMenu>
 
@@ -202,7 +202,7 @@ function SideBar() {
                 <AiOutlinePlus size={iconSize} color={colors.primary[900]} />
               }
               selected={selected}
-              setSelected={setSelected}
+              setSelected={() => setSelected("Plays")}
             />
             <Item
               title="View Plays"
@@ -214,7 +214,7 @@ function SideBar() {
                 />
               }
               selected={selected}
-              setSelected={setSelected}
+              setSelected={() => setSelected("Plays")}
             />
           </SubMenu>
 
@@ -232,7 +232,7 @@ function SideBar() {
             to="/all-orders"
             icon={<BsClipboard size={iconSize} color={colors.primary[900]} />}
             selected={selected}
-            setSelected={setSelected}
+            setSelected={() => setSelected("Orders")}
           />
 
           {/* Users */}
@@ -249,7 +249,7 @@ function SideBar() {
             to="/users"
             icon={<AiOutlineUser size={iconSize} color={colors.primary[900]} />}
             selected={selected}
-            setSelected={setSelected}
+            setSelected={() => setSelected("Users")}
           />
 
           {/* CopyRight */}

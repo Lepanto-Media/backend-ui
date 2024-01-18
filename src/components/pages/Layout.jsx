@@ -1,10 +1,12 @@
 import React, { Suspense } from "react";
 import LoadingScreen from "../global/screens/LoadingScreen";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import SideBar from "../global/Navigation/SideBar";
 import TopBar from "../global/Navigation/TopBar";
+import { checkUser } from "./Login/checkUser";
 
 function Layout() {
+  const navigate = useNavigate();
   return (
     <>
       <div className="app">
@@ -12,7 +14,7 @@ function Layout() {
         <main className="content">
           <TopBar />
           <Suspense fallback={<LoadingScreen />}>
-            <Outlet />
+            {checkUser() ? <Outlet /> : <Navigate to="/login" />}
           </Suspense>
         </main>
       </div>

@@ -1,31 +1,72 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, TextField, Button, useTheme, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { tokens } from "../../../theme";
 import Logo from "../../../assets/logo.webp";
+import axios from "axios";
+import { AUTH_TOKEN, BASE_URL } from "../../global/constants";
+import Toast from "../../global/Toast";
 
 function Login() {
   const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const [error, setError] = useState({
+    visible: false,
+    message: "",
+  });
+
   const initialValues = {
-    username: "",
-    password: "",
+    email: "judyjose008@gmail.com",
+    password: "123",
   };
 
   const userSchema = yup.object().shape({
-    username: yup.string().required("Username is required"),
+    email: yup.string().required("Email is required"),
     password: yup.string().required("Password is required"),
   });
 
   const handleFormSubmit = (values) => {
-    console.log(values);
-    localStorage.setItem("auth_token", "eukwgfkeuwhg");
-    navigate("/");
+    let data = JSON.stringify(values);
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: `${BASE_URL}/auth/login`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        localStorage.setItem(AUTH_TOKEN, response.data.data.token);
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log(error);
+        setError({
+          visible: true,
+          message: error.response.data.message,
+        });
+      });
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (error.visible) {
+        setError({
+          visible: false,
+          message: "",
+        });
+      }
+    }, 5000);
+  }, [error]);
 
   return (
     <Box
@@ -57,6 +98,7 @@ function Login() {
         {/* <Typography variant="h1">Admin DashBoard</Typography> */}
         <Box component="img" src={Logo} />
         <Typography variant="h2">Lepanto Media</Typography>
+        {error.visible && <Toast data={error} setState={setError} />}
         <Box
           display="flex"
           width="100%"
@@ -89,13 +131,13 @@ function Login() {
                     fullWidth
                     variant="filled"
                     type="text"
-                    label="User Name"
+                    label="e Mail"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.username}
-                    name="username"
-                    error={!!touched.username && !!errors.username}
-                    helperText={touched.username && errors.username}
+                    value={values.email}
+                    name="email"
+                    error={!!touched.email && !!errors.email}
+                    helperText={touched.email && errors.username}
                   />
                   <TextField
                     fullWidth

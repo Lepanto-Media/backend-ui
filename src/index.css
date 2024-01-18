@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap');
 
+@import "node_modules/react-image-gallery/styles/css/image-gallery.css";
+
 html, body {
   margin: 0;
   padding: 0;

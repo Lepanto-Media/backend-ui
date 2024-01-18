@@ -10,18 +10,14 @@ function Header({ title, subtitle }) {
     <Box mb="30px">
       <Typography
         variant="h2"
-        color={colors.grey[100]}
+        color={colors.blueAccent[600]}
         fontWeight="bold"
         sx={{ mb: "5px" }}
         textTransform="uppercase"
       >
         {title}
       </Typography>
-      <Typography
-        variant="h5"
-        color={colors.greenAccent[400]}
-        fontWeight="bold"
-      >
+      <Typography variant="h5" color={colors.blueAccent[400]} fontWeight="bold">
         {subtitle}
       </Typography>
     </Box>
