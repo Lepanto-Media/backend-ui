@@ -4,6 +4,7 @@ import { checkUser } from "./components/pages/Login/checkUser";
 import AddCategory from "./components/pages/Category/AddCategory";
 import ViewCategories from "./components/pages/Category/ViewCategories";
 import SingleCategory from "./components/pages/Category/SingleCategory";
+import AddPlay from "./components/pages/Plays/AddPlay";
 
 const Layout = lazy(() => import("./components/pages/Layout"));
 const Home = lazy(() => import("./components/pages/Home"));
@@ -16,9 +17,12 @@ function privateRoutes() {
       element: <Layout />,
       children: [
         { path: "/", element: <Home /> },
+        // Category
         { path: "/add-category", element: <AddCategory /> },
         { path: "/view-categories", element: <ViewCategories /> },
         { path: "/category", element: <SingleCategory /> },
+        // Plays
+        { path: "/add-play", element: <AddPlay /> },
       ],
     },
     {
