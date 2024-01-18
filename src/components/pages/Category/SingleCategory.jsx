@@ -1,7 +1,7 @@
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ImageGallery from "react-image-gallery";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { AUTH_TOKEN, BASE_URL } from "../../global/constants";
 import axios from "axios";
 import LoadingScreen from "../../global/screens/LoadingScreen";
@@ -28,6 +28,7 @@ const images = [
 ];
 
 function SingleCategory() {
+  const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -37,6 +38,7 @@ function SingleCategory() {
   const [categoryInfo, setCategoryInfo] = useState();
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState({ visible: false, message: "" });
+  const [notExist, setNotExits] = useState(false);
 
   const [modalData, setModalData] = useState({
     isDelete: false,
@@ -64,6 +66,9 @@ function SingleCategory() {
           vuisible: true,
           message: error.response.data.message,
         });
+        if (error.response.data.status === 404) {
+          setNotExits(true);
+        }
       });
   };
 
@@ -93,6 +98,7 @@ function SingleCategory() {
       .then((response) => {
         handleClose();
         setMessage({ visible: true, message: response.data.message });
+        navigate("/view-categories");
       })
       .catch((error) => {
         console.log(error);
@@ -126,7 +132,13 @@ function SingleCategory() {
       });
   };
 
-  if (loading) {
+  if (loading && notExist) {
+    return (
+      <>
+        <h1>NOt Exist</h1>
+      </>
+    );
+  } else if (loading) {
     return (
       <>
         <LoadingScreen />
