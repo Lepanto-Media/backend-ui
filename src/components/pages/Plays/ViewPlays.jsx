@@ -9,16 +9,24 @@ import {
 } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
 import { tokens } from "../../../theme";
-import { Box, Pagination, PaginationItem, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Pagination,
+  PaginationItem,
+  Typography,
+} from "@mui/material";
+import { FaPlus } from "react-icons/fa6";
 import { AUTH_TOKEN, BASE_URL } from "../../global/constants";
 import Header from "../../global/Header";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-function ViewCategories() {
+function ViewPlays() {
   const token = localStorage.getItem(AUTH_TOKEN);
-  const [categoryData, setCategoryData] = useState([]);
+  const [playData, setplayData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const [paginationModel, setPaginationModel] = useState({
     pageSize: 10,
@@ -30,7 +38,7 @@ function ViewCategories() {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${BASE_URL}/category`,
+      url: `${BASE_URL}/play`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -40,7 +48,7 @@ function ViewCategories() {
       .request(config)
       .then((response) => {
         console.log(JSON.stringify(response.data));
-        setCategoryData(response.data.data);
+        setplayData(response.data.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -55,21 +63,21 @@ function ViewCategories() {
   }, []);
   const columns = [
     {
-      field: "category_name",
+      field: "play_name",
       headerName: "NAME",
       flex: 1,
       cellClassName: "name-column--cell",
       width: 200,
-      renderCell: ({ row: { category_name, _id } }) => {
+      renderCell: ({ row: { play_name, _id } }) => {
         return (
           <Link
-            to={`/category?id=${_id}`}
+            to={`/play?id=${_id}`}
             style={{
               color: colors.primary[100],
               textDecoration: "none",
             }}
           >
-            <Typography sx={{ ml: "5px" }}>{category_name}</Typography>
+            <Typography sx={{ ml: "5px" }}>{play_name}</Typography>
           </Link>
         );
       },
@@ -104,6 +112,17 @@ function ViewCategories() {
   return (
     <Box m="0 20px">
       <Header title="Category" subtitle="View All Categories" />
+      <Button
+        onClick={() => navigate("/add-play")}
+        sx={{
+          background: colors.greenAccent[400],
+          color: colors.primary[900],
+          p: 2,
+        }}
+      >
+        {" "}
+        Add New Play &nbsp; <FaPlus />
+      </Button>
       <Box
         m="40px 0 0 0"
         height="75vh"
@@ -155,7 +174,7 @@ function ViewCategories() {
         {!loading && (
           <DataGrid
             getRowId={(row) => row._id}
-            rows={categoryData.categories}
+            rows={playData.plays}
             columns={columns}
             loading={loading}
             components={{ Toolbar: GridToolbar }}
@@ -175,23 +194,4 @@ function ViewCategories() {
   );
 }
 
-function CustomPagination() {
-  const apiRef = useGridApiContext();
-  const page = useGridSelector(apiRef, gridPageSelector);
-  const pageCount = useGridSelector(apiRef, gridPageCountSelector);
-
-  return (
-    <Pagination
-      color="primary"
-      variant="outlined"
-      shape="rounded"
-      page={page + 1}
-      count={pageCount}
-      // @ts-expect-error
-      renderItem={(props2) => <PaginationItem {...props2} disableRipple />}
-      onChange={(event, value) => apiRef.current.setPage(value - 1)}
-    />
-  );
-}
-
-export default ViewCategories;
+export default ViewPlays;

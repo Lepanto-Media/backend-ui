@@ -156,67 +156,22 @@ function SideBar() {
 
           {/* Category */}
 
-          <SubMenu
-            label="Category"
+          <Item
+            title="View Category"
+            to="/view-categories"
             icon={<BiCategory size={iconSize} color={colors.primary[900]} />}
-            style={{
-              color: colors.primary[900],
-            }}
-          >
-            <Item
-              title="Add Category"
-              to="/add-category"
-              icon={
-                <AiOutlinePlus size={iconSize} color={colors.primary[900]} />
-              }
-              selected={selected}
-              setSelected={() => setSelected("Category")}
-            />
-            <Item
-              title="View Category"
-              to="/view-categories"
-              icon={
-                <AiOutlineUnorderedList
-                  size={iconSize}
-                  color={colors.primary[900]}
-                />
-              }
-              selected={selected}
-              setSelected={() => setSelected("Category")}
-            />
-          </SubMenu>
-
+            selected={selected}
+            setSelected={() => setSelected("Category")}
+          />
           {/* Plays */}
 
-          <SubMenu
-            label="Plays"
+          <Item
+            title="View Plays"
+            to="/view-plays"
             icon={<GiDramaMasks size={iconSize} color={colors.primary[900]} />}
-            style={{
-              color: colors.primary[900],
-            }}
-          >
-            <Item
-              title="Add Play"
-              to="/add-play"
-              icon={
-                <AiOutlinePlus size={iconSize} color={colors.primary[900]} />
-              }
-              selected={selected}
-              setSelected={() => setSelected("Plays")}
-            />
-            <Item
-              title="View Plays"
-              to="/view-plays"
-              icon={
-                <AiOutlineUnorderedList
-                  size={iconSize}
-                  color={colors.primary[900]}
-                />
-              }
-              selected={selected}
-              setSelected={() => setSelected("Plays")}
-            />
-          </SubMenu>
+            selected={selected}
+            setSelected={() => setSelected("Plays")}
+          />
 
           {/* Orders */}
 

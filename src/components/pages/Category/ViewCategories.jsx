@@ -9,13 +9,23 @@ import {
 } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
 import { tokens } from "../../../theme";
-import { Box, Pagination, PaginationItem, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Fab,
+  IconButton,
+  Pagination,
+  PaginationItem,
+  Typography,
+} from "@mui/material";
 import { AUTH_TOKEN, BASE_URL } from "../../global/constants";
 import Header from "../../global/Header";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { FaPlus } from "react-icons/fa6";
 
 function ViewCategories() {
+  const navigate = useNavigate();
   const token = localStorage.getItem(AUTH_TOKEN);
   const [categoryData, setCategoryData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -102,95 +112,89 @@ function ViewCategories() {
     },
   ];
   return (
-    <Box m="0 20px">
-      <Header title="Category" subtitle="View All Categories" />
-      <Box
-        m="40px 0 0 0"
-        height="75vh"
-        sx={{
-          "& .MuiDataGrid-root": {
-            border: "none",
-          },
-          "& .MuiDataGrid-cell": {
-            borderBottom: "none",
-          },
-          "& .name-column--cell": {
-            color: colors.blueAccent[100],
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.blueAccent[500],
+    <>
+      <Box m="0 20px">
+        <Header title="Category" subtitle="View All Categories" />
+        <Button
+          onClick={() => navigate("/add-category")}
+          sx={{
+            background: colors.greenAccent[400],
             color: colors.primary[900],
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[500],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.blueAccent[500],
-          },
-          "& .MuiCheckbox-root": {
-            color: `${colors.primary[200]} !important`,
-          },
-          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-            color: `${colors.primary[100]} !important`,
-          },
-          "& MuiTablePagination-toolbar": {
-            color: `${colors.primary[900]} !important`,
-          },
-          "& MuiIconButton-sizeMedium": {
-            color: `${colors.primary[900]} !important`,
-          },
-          "& .MuiDataGrid-columnHeader, .MuiDataGrid-cell": {
-            borderRight: `1px solid ${colors.primary[300]}`,
-          },
-          "& .MuiDataGrid-columnsContainer, .MuiDataGrid-cell": {
-            borderBottom: `1px solid ${colors.primary[300]}`,
-          },
-          "& MuiTablePagination-root": {
-            color: `${colors.primary[100]} !important`,
-          },
-        }}
-      >
-        {!loading && (
-          <DataGrid
-            getRowId={(row) => row._id}
-            rows={categoryData.categories}
-            columns={columns}
-            loading={loading}
-            components={{ Toolbar: GridToolbar }}
-            disableSelectionOnClick
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 8,
+            p: 2,
+          }}
+        >
+          {" "}
+          Add New Category &nbsp; <FaPlus />
+        </Button>
+        <Box
+          m="40px 0 0 0"
+          height="75vh"
+          sx={{
+            "& .MuiDataGrid-root": {
+              border: "none",
+            },
+            "& .MuiDataGrid-cell": {
+              borderBottom: "none",
+            },
+            "& .name-column--cell": {
+              color: colors.blueAccent[100],
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: colors.blueAccent[500],
+              color: colors.primary[900],
+              borderBottom: "none",
+            },
+            "& .MuiDataGrid-virtualScroller": {
+              backgroundColor: colors.primary[500],
+            },
+            "& .MuiDataGrid-footerContainer": {
+              borderTop: "none",
+              backgroundColor: colors.blueAccent[500],
+            },
+            "& .MuiCheckbox-root": {
+              color: `${colors.primary[200]} !important`,
+            },
+            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+              color: `${colors.primary[100]} !important`,
+            },
+            "& MuiTablePagination-toolbar": {
+              color: `${colors.primary[900]} !important`,
+            },
+            "& MuiIconButton-sizeMedium": {
+              color: `${colors.primary[900]} !important`,
+            },
+            "& .MuiDataGrid-columnHeader, .MuiDataGrid-cell": {
+              borderRight: `1px solid ${colors.primary[300]}`,
+            },
+            "& .MuiDataGrid-columnsContainer, .MuiDataGrid-cell": {
+              borderBottom: `1px solid ${colors.primary[300]}`,
+            },
+            "& MuiTablePagination-root": {
+              color: `#fff !important`,
+            },
+          }}
+        >
+          {!loading && (
+            <DataGrid
+              getRowId={(row) => row._id}
+              rows={categoryData.categories}
+              columns={columns}
+              loading={loading}
+              components={{ Toolbar: GridToolbar }}
+              disableSelectionOnClick
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 8,
+                  },
                 },
-              },
-            }}
-            pageSizeOptions={[8]}
-          />
-        )}
+              }}
+              pageSizeOptions={[8]}
+            />
+          )}
+        </Box>
       </Box>
-    </Box>
-  );
-}
-
-function CustomPagination() {
-  const apiRef = useGridApiContext();
-  const page = useGridSelector(apiRef, gridPageSelector);
-  const pageCount = useGridSelector(apiRef, gridPageCountSelector);
-
-  return (
-    <Pagination
-      color="primary"
-      variant="outlined"
-      shape="rounded"
-      page={page + 1}
-      count={pageCount}
-      // @ts-expect-error
-      renderItem={(props2) => <PaginationItem {...props2} disableRipple />}
-      onChange={(event, value) => apiRef.current.setPage(value - 1)}
-    />
+    </>
   );
 }
 

@@ -5,6 +5,7 @@ import AddCategory from "./components/pages/Category/AddCategory";
 import ViewCategories from "./components/pages/Category/ViewCategories";
 import SingleCategory from "./components/pages/Category/SingleCategory";
 import AddPlay from "./components/pages/Plays/AddPlay";
+import ViewPlays from "./components/pages/Plays/ViewPlays";
 
 const Layout = lazy(() => import("./components/pages/Layout"));
 const Home = lazy(() => import("./components/pages/Home"));
@@ -23,6 +24,7 @@ function privateRoutes() {
         { path: "/category", element: <SingleCategory /> },
         // Plays
         { path: "/add-play", element: <AddPlay /> },
+        { path: "/view-plays", element: <ViewPlays /> },
       ],
     },
     {

@@ -36,15 +36,13 @@ const initialValues = {
   either_roles: 0,
   run_time: 0,
   maximum_performances: 5,
-  performance_right_price: [],
   persual_script_price: 0,
   poster_artist: "",
   related_plays: [],
+  performance_right_price: [],
 };
 
 const categorySchema = yup.object().shape({
-  category_name: yup.string().required("Required"),
-  category_type: yup.string().required("Required"),
   play_name: yup.string().required("Required"),
   category_id: yup.string().required("Required"),
   author: yup.string().required("Required"),
@@ -53,9 +51,9 @@ const categorySchema = yup.object().shape({
   male_roles: yup.string().required("Required"),
   female_roles: yup.string().required("Required"),
   either_roles: yup.string(),
-  run_time: yup.number().required("Required"),
+  run_time: yup.number(),
   maximum_performances: yup.number().required("Required"),
-  performance_right_price: yup.number().required("Required"),
+  performance_right_price: yup.array().required("Required"),
   persual_script_price: yup.number().required("Required"),
   poster_artist: yup.string().required("Required"),
   related_plays: yup.array(),
@@ -63,10 +61,12 @@ const categorySchema = yup.object().shape({
 
 function AddPlay() {
   const navigate = useNavigate();
+
   const [categories, setCategories] = useState([]);
   const [imageData, setImageData] = useState([]);
-  const [previewScript, setPreviewScript] = useState([]);
-  const [persualScript, setPersualScript] = useState([]);
+  const [previewScript, setPreviewScript] = useState({});
+  const [persualScript, setPersualScript] = useState({});
+  const [originalScript, setOriginalScript] = useState({});
   const [message, setMessage] = useState({
     visible: false,
     message: "",
@@ -100,9 +100,11 @@ function AddPlay() {
       .request(config)
       .then((response) => {
         if (type === "preview_script") {
-          setPreviewScript(response.data.data.images);
+          setPreviewScript(response.data.data.images[0]);
         } else if (type === "persual_script") {
-          setPersualScript(response.data.data.images);
+          setPersualScript(response.data.data.images[0]);
+        } else if (type === "original_script") {
+          setOriginalScript(response.data.data.images[0]);
         } else if (type === "images") {
           const newImages = [...imageData, ...response.data.data.images];
           setImageData(newImages);
@@ -142,15 +144,19 @@ function AddPlay() {
   };
 
   const handleFormSubmit = (values) => {
-    console.log(values);
     let data = JSON.stringify({
       ...values,
+      orginal_script_link: originalScript,
+      preview_script_link: previewScript,
+      persual_script_link: persualScript,
+      images: imageData,
     });
+    console.log(data);
 
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `${BASE_URL}/category`,
+      url: `${BASE_URL}/play`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -165,7 +171,7 @@ function AddPlay() {
           visible: true,
           message: response.data.message,
         });
-        navigate(`/category?id=${response.data.data._id}`);
+        navigate(`/play?id=${response.data.data._id}`);
       })
       .catch((error) => {
         console.log(error);
@@ -213,6 +219,7 @@ function AddPlay() {
           handleBlur,
           handleChange,
           handleSubmit,
+          setFieldValue,
         }) => (
           <form onSubmit={handleSubmit}>
             <Box display="flex" gap="30px" flexDirection="column">
@@ -256,6 +263,8 @@ function AddPlay() {
                 helperText={touched.description && errors.description}
                 label="Description"
                 variant="filled"
+                onChange={handleChange}
+                onBlur={handleBlur}
               />
               <TextField
                 fullWidth
@@ -321,14 +330,17 @@ function AddPlay() {
               </Box>
               <Box sx={{ display: "flex", gap: 2 }}>
                 <TextField
-                  sx={{
-                    width: "40%",
-                  }}
+                  fullWidth
                   variant="filled"
                   type="number"
                   label="Maximum Performances"
                   onBlur={handleBlur}
-                  onChange={handleChange}
+                  onChange={(event) => {
+                    setFieldValue(
+                      "maximum_performances",
+                      parseInt(event.target.value)
+                    );
+                  }}
                   value={values.maximum_performances}
                   name="maximum_performances"
                   error={
@@ -339,6 +351,20 @@ function AddPlay() {
                     touched.maximum_performances && errors.maximum_performances
                   }
                 />
+                <TextField
+                  fullWidth
+                  variant="filled"
+                  type="number"
+                  label="Run Time"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.run_time}
+                  name="run_time"
+                  error={!!touched.run_time && !!errors.run_time}
+                  helperText={touched.run_time && errors.run_time}
+                />
+              </Box>
+              <Box sx={{ display: "flex", gap: 2 }}>
                 <Button
                   component="label"
                   variant="contained"
@@ -387,6 +413,30 @@ function AddPlay() {
                     }
                   />
                 </Button>
+                <Button
+                  component="label"
+                  variant="contained"
+                  startIcon={<CloudUploadIcon />}
+                >
+                  Upload Original Script
+                  <input
+                    style={{
+                      clip: "rect(0 0 0 0)",
+                      clipPath: "inset(50%)",
+                      height: 1,
+                      overflow: "hidden",
+                      position: "absolute",
+                      bottom: 0,
+                      left: 0,
+                      whiteSpace: "nowrap",
+                      width: 1,
+                    }}
+                    type="file"
+                    onChange={(event) =>
+                      handleFileUpload(event.target.files, "original_script")
+                    }
+                  />
+                </Button>
               </Box>
               <Box sx={{ display: "flex", gap: 2 }}>
                 <TextField
@@ -418,6 +468,49 @@ function AddPlay() {
                   error={!!touched.poster_artist && !!errors.poster_artist}
                   helperText={touched.poster_artist && errors.poster_artist}
                 />
+              </Box>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                {Array.from({ length: values.maximum_performances }).map(
+                  (_, index) => (
+                    <Box key={index} sx={{ display: "flex", gap: 2 }}>
+                      <TextField
+                        fullWidth
+                        variant="filled"
+                        type="number"
+                        label={`Performance #${index + 1}`}
+                        onBlur={handleBlur}
+                        onChange={(e) => {
+                          setFieldValue(
+                            `performance_right_price[${index}].number_of_performance`,
+                            e.target.value
+                          );
+                        }}
+                        value={
+                          values.performance_right_price?.[index]
+                            ?.number_of_performance || 0
+                        }
+                        name={`performance_right_price[${index}].number_of_performance`}
+                      />
+                      <TextField
+                        fullWidth
+                        variant="filled"
+                        type="number"
+                        label={`Price #${index + 1}`}
+                        onBlur={handleBlur}
+                        onChange={(e) => {
+                          setFieldValue(
+                            `performance_right_price[${index}].price`,
+                            e.target.value
+                          );
+                        }}
+                        value={
+                          values.performance_right_price?.[index]?.price || 0
+                        }
+                        name={`performance_right_price[${index}].price`}
+                      />
+                    </Box>
+                  )
+                )}
               </Box>
               {/* Images Uploader*/}
 
@@ -459,6 +552,7 @@ function AddPlay() {
                     src={`${item.src}`}
                     alt={item.key}
                     loading="lazy"
+                    width="300px"
                   />
                   <ImageListItemBar
                     title={item.key}
