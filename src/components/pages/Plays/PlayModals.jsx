@@ -206,11 +206,21 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
   const handleFormSubmit = (values) => {
     let data = {
       ...values,
+      performance_right_price: values.performance_right_price.map(
+        (performance) => {
+          const { _id, ...performanceWithoutId } = performance;
+          return performanceWithoutId;
+        }
+      ),
       orginal_script_link: originalScript,
       preview_script_link: previewScript,
       persual_script_link: persualScript,
-      images: imageData,
+      images: imageData.map((image) => {
+        const { _id, ...imageWithoutId } = image;
+        return imageWithoutId;
+      }),
     };
+    console.log(data);
     handleEdit(data);
   };
 
@@ -582,7 +592,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
               </ImageList>
               <Box display="flex" justifyContent="end" mt="20px">
                 <Button type="submit" color="secondary" variant="contained">
-                  Add Play
+                  Update Play
                 </Button>
               </Box>
             </form>
