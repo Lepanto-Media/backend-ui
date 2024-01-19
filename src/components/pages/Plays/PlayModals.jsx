@@ -16,7 +16,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Formik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as yup from "yup";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { AUTH_TOKEN, BASE_URL } from "../../global/constants";
@@ -33,6 +33,8 @@ const style = {
   border: "2px solid #000",
   boxShadow: 24,
   p: 4,
+  height: "80%",
+  overflowY: "scroll",
 };
 
 export function DeleteModal({ item, open, handleClose, handleDelete }) {
@@ -69,10 +71,38 @@ export function DeleteModal({ item, open, handleClose, handleDelete }) {
   );
 }
 export function EditModal({ item, open, handleClose, handleEdit }) {
-  const [imageData, setImageData] = useState(item?.images);
+  const [imageData, setImageData] = useState(item.images);
+  const [categories, setCategories] = useState([]);
+  const [previewScript, setPreviewScript] = useState(item.preview_script_link);
+  const [persualScript, setPersualScript] = useState(item.persual_script_link);
+  const [originalScript, setOriginalScript] = useState(
+    item.original_script_link
+  );
+
+  useEffect(() => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${BASE_URL}/category`,
+      headers: {
+        q: "",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        setCategories(response.data.data.categories);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   const token = localStorage.getItem(AUTH_TOKEN);
 
-  const handleImageUpload = (files) => {
+  const handleFileUpload = (files, type) => {
     let data = new FormData();
     Array.from(files).forEach((file) => {
       data.append("files", file);
@@ -91,17 +121,27 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
     axios
       .request(config)
       .then((response) => {
-        const newImages = [...imageData, ...response.data.data.images];
-        setImageData(newImages);
+        if (type === "preview_script") {
+          setPreviewScript(response.data.data.images[0]);
+        } else if (type === "persual_script") {
+          setPersualScript(response.data.data.images[0]);
+        } else if (type === "original_script") {
+          setOriginalScript(response.data.data.images[0]);
+        } else if (type === "images") {
+          const newImages = [...imageData, ...response.data.data.images];
+          setImageData(newImages);
+        }
       })
       .catch((error) => {
+        console.log(error);
         setMessage({
           visible: true,
           message: error.response.data.message,
         });
       });
   };
-  const handleImageDelete = (key) => {
+
+  const handleFileDelete = (key) => {
     let config = {
       method: "delete",
       maxBodyLength: Infinity,
@@ -126,22 +166,59 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
   };
 
   const isNonMobile = useMediaQuery("(min-width: 600px)");
+
+  // console.log(item);
+
   const initialValues = {
-    category_name: item.category_name,
-    category_type: item.category_type,
-    active: item.active,
+    play_name: item.play_name,
+    category_id: item.category_id._id,
+    author: item.author,
+    adapted_author: item.adapted_author,
+    description: item.description,
+    male_roles: item.male_roles,
+    female_roles: item.female_roles,
+    either_roles: item.either_roles,
+    run_time: item.run_time,
+    maximum_performances: item.maximum_performances,
+    persual_script_price: item.persual_script_price,
+    poster_artist: item.poster_artist,
+    related_plays: item.related_plays,
+    performance_right_price: item.performance_right_price,
   };
 
   const categorySchema = yup.object().shape({
-    category_name: yup.string().required("Required"),
-    category_type: yup.string().required("Required"),
-    active: yup.boolean().required("Required"),
+    play_name: yup.string().required("Required"),
+    category_id: yup.string().required("Required"),
+    author: yup.string().required("Required"),
+    adapted_author: yup.string(),
+    description: yup.string().required("Required"),
+    male_roles: yup.string().required("Required"),
+    female_roles: yup.string().required("Required"),
+    either_roles: yup.string(),
+    run_time: yup.number(),
+    maximum_performances: yup.number().required("Required"),
+    performance_right_price: yup.array().required("Required"),
+    persual_script_price: yup.number().required("Required"),
+    poster_artist: yup.string().required("Required"),
+    related_plays: yup.array(),
   });
+
+  const handleFormSubmit = (values) => {
+    let data = {
+      ...values,
+      orginal_script_link: originalScript,
+      preview_script_link: previewScript,
+      persual_script_link: persualScript,
+      images: imageData,
+    };
+    handleEdit(data);
+  };
+
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
         <Formik
-          onSubmit={handleEdit}
+          onSubmit={handleFormSubmit}
           initialValues={initialValues}
           validationSchema={categorySchema}
         >
@@ -152,6 +229,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
             handleBlur,
             handleChange,
             handleSubmit,
+            setFieldValue,
           }) => (
             <form onSubmit={handleSubmit}>
               <Box display="flex" gap="30px" flexDirection="column">
@@ -159,50 +237,299 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                   fullWidth
                   variant="filled"
                   type="text"
-                  label="Category Name"
+                  label="Play Name"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.category_name}
-                  name="category_name"
-                  error={!!touched.category_name && !!errors.category_name}
-                  helperText={touched.category_name && errors.category_name}
+                  value={values.play_name}
+                  name="play_name"
+                  error={!!touched.play_name && !!errors.play_name}
+                  helperText={touched.play_name && errors.play_name}
                 />
                 <FormControl fullWidth>
-                  <InputLabel>Category Type</InputLabel>
+                  <InputLabel>Category</InputLabel>
                   <Select
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.category_type}
-                    name="category_type"
-                    error={!!touched.category_type && !!errors.category_type}
-                    helperText={touched.category_type && errors.category_type}
-                    label="Category Type"
+                    value={values.category_id}
+                    name="category_id"
+                    error={!!touched.category_id && !!errors.category_id}
+                    helperText={touched.category_id && errors.category_id}
+                    label="Category"
                   >
-                    <MenuItem value={"PLAY"}>PLAY</MenuItem>
-                    <MenuItem value={"TEST"}>TEST</MenuItem>
+                    {categories.length !== 0 &&
+                      categories?.map((category) => (
+                        <MenuItem value={category._id}>
+                          {category.category_name}
+                        </MenuItem>
+                      ))}
                   </Select>
                 </FormControl>
-                <FormControl fullWidth>
-                  <InputLabel>Active</InputLabel>
-                  <Select
+                <TextField
+                  multiline
+                  rows={4}
+                  value={values.description}
+                  name="description"
+                  error={!!touched.description && !!errors.description}
+                  helperText={touched.description && errors.description}
+                  label="Description"
+                  variant="filled"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <TextField
+                  fullWidth
+                  variant="filled"
+                  type="text"
+                  label="Author"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.author}
+                  name="author"
+                  error={!!touched.author && !!errors.author}
+                  helperText={touched.author && errors.author}
+                />
+                <TextField
+                  fullWidth
+                  variant="filled"
+                  type="text"
+                  label="Adapted Author"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.adapted_author}
+                  name="adapted_author"
+                  error={!!touched.adapted_author && !!errors.adapted_author}
+                  helperText={touched.adapted_author && errors.adapted_author}
+                />
+                <Box sx={{ display: "flex", gap: 2 }}>
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="number"
+                    label="Male Roles"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.active}
-                    name="active"
-                    error={!!touched.active && !!errors.active}
-                    helperText={touched.active && errors.active}
-                    label="Active"
+                    value={values.male_roles}
+                    name="male_roles"
+                    error={!!touched.male_roles && !!errors.male_roles}
+                    helperText={touched.male_roles && errors.male_roles}
+                  />
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="number"
+                    label="Female Roles"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.female_roles}
+                    name="female_roles"
+                    error={!!touched.female_roles && !!errors.female_roles}
+                    helperText={touched.female_roles && errors.female_roles}
+                  />
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="number"
+                    label="Either Roles"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.either_roles}
+                    name="either_roles"
+                    error={!!touched.either_roles && !!errors.either_roles}
+                    helperText={touched.either_roles && errors.either_roles}
+                  />
+                </Box>
+                <Box sx={{ display: "flex", gap: 2 }}>
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="number"
+                    label="Maximum Performances"
+                    onBlur={handleBlur}
+                    onChange={(event) => {
+                      setFieldValue(
+                        "maximum_performances",
+                        parseInt(event.target.value)
+                      );
+                    }}
+                    value={values.maximum_performances}
+                    name="maximum_performances"
+                    error={
+                      !!touched.maximum_performances &&
+                      !!errors.maximum_performances
+                    }
+                    helperText={
+                      touched.maximum_performances &&
+                      errors.maximum_performances
+                    }
+                  />
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="number"
+                    label="Run Time"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.run_time}
+                    name="run_time"
+                    error={!!touched.run_time && !!errors.run_time}
+                    helperText={touched.run_time && errors.run_time}
+                  />
+                </Box>
+                <Box sx={{ display: "flex", gap: 2 }}>
+                  <Button
+                    component="label"
+                    variant="contained"
+                    startIcon={<CloudUploadIcon />}
                   >
-                    <MenuItem value={true}>Active</MenuItem>
-                    <MenuItem value={false}>Inactive</MenuItem>
-                  </Select>
-                </FormControl>
-                {/* Image Uploader */}
-                {/* <Button
+                    Upload Preview Script
+                    <input
+                      style={{
+                        clip: "rect(0 0 0 0)",
+                        clipPath: "inset(50%)",
+                        height: 1,
+                        overflow: "hidden",
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        whiteSpace: "nowrap",
+                        width: 1,
+                      }}
+                      type="file"
+                      onChange={(event) =>
+                        handleFileUpload(event.target.files, "preview_script")
+                      }
+                    />
+                  </Button>
+                  <Button
+                    component="label"
+                    variant="contained"
+                    startIcon={<CloudUploadIcon />}
+                  >
+                    Upload Persual Script
+                    <input
+                      style={{
+                        clip: "rect(0 0 0 0)",
+                        clipPath: "inset(50%)",
+                        height: 1,
+                        overflow: "hidden",
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        whiteSpace: "nowrap",
+                        width: 1,
+                      }}
+                      type="file"
+                      onChange={(event) =>
+                        handleFileUpload(event.target.files, "persual_script")
+                      }
+                    />
+                  </Button>
+                  <Button
+                    component="label"
+                    variant="contained"
+                    startIcon={<CloudUploadIcon />}
+                  >
+                    Upload Original Script
+                    <input
+                      style={{
+                        clip: "rect(0 0 0 0)",
+                        clipPath: "inset(50%)",
+                        height: 1,
+                        overflow: "hidden",
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        whiteSpace: "nowrap",
+                        width: 1,
+                      }}
+                      type="file"
+                      onChange={(event) =>
+                        handleFileUpload(event.target.files, "original_script")
+                      }
+                    />
+                  </Button>
+                </Box>
+                <Box sx={{ display: "flex", gap: 2 }}>
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="number"
+                    label="Persual Script Price"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.persual_script_price}
+                    name="persual_script_price"
+                    error={
+                      !!touched.persual_script_price &&
+                      !!errors.persual_script_price
+                    }
+                    helperText={
+                      touched.persual_script_price &&
+                      errors.persual_script_price
+                    }
+                  />
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="text"
+                    label="Poster Artist"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.poster_artist}
+                    name="poster_artist"
+                    error={!!touched.poster_artist && !!errors.poster_artist}
+                    helperText={touched.poster_artist && errors.poster_artist}
+                  />
+                </Box>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  {Array.from({ length: values.maximum_performances }).map(
+                    (_, index) => (
+                      <Box key={index} sx={{ display: "flex", gap: 2 }}>
+                        <TextField
+                          fullWidth
+                          variant="filled"
+                          type="number"
+                          label={`Performance #${index + 1}`}
+                          onBlur={handleBlur}
+                          onChange={(e) => {
+                            setFieldValue(
+                              `performance_right_price[${index}].number_of_performance`,
+                              parseInt(e.target.value)
+                            );
+                          }}
+                          value={
+                            values.performance_right_price?.[index]
+                              ?.number_of_performance || 0
+                          }
+                          name={`performance_right_price[${index}].number_of_performance`}
+                        />
+                        <TextField
+                          fullWidth
+                          variant="filled"
+                          type="number"
+                          label={`Price #${index + 1}`}
+                          onBlur={handleBlur}
+                          onChange={(e) => {
+                            setFieldValue(
+                              `performance_right_price[${index}].price`,
+                              parseInt(e.target.value)
+                            );
+                          }}
+                          value={
+                            values.performance_right_price?.[index]?.price || 0
+                          }
+                          name={`performance_right_price[${index}].price`}
+                        />
+                      </Box>
+                    )
+                  )}
+                </Box>
+                {/* Images Uploader*/}
+
+                <Button
                   component="label"
                   variant="contained"
                   startIcon={<CloudUploadIcon />}
-                  sx={{ width: "100%" }}
                 >
                   Upload Images
                   <input
@@ -219,12 +546,14 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                       width: 1,
                     }}
                     type="file"
-                    onChange={(event) => handleImageUpload(event.target.files)}
+                    onChange={(event) =>
+                      handleFileUpload(event.target.files, "images")
+                    }
                   />
-                </Button> */}
+                </Button>
               </Box>
-              {/* Images Viewer */}
-              {/* <ImageList sx={{ width: "100%", height: "100%" }}>
+              {/* Image Viewer */}
+              <ImageList sx={{ width: "100%", height: "100%" }}>
                 <ImageListItem key="Subheader" cols={2}>
                   <ListSubheader component="div">Uploaded Images</ListSubheader>
                 </ImageListItem>
@@ -235,13 +564,14 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                       src={`${item.src}`}
                       alt={item.key}
                       loading="lazy"
+                      width="300px"
                     />
                     <ImageListItemBar
                       title={item.key}
                       actionIcon={
                         <IconButton
                           sx={{ color: "rgba(255, 0, 0, 0.75)" }}
-                          onClick={() => handleImageDelete(item.key)}
+                          onClick={() => handleFileDelete(item.key)}
                         >
                           <MdDelete />
                         </IconButton>
@@ -249,10 +579,10 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                     />
                   </ImageListItem>
                 ))}
-              </ImageList> */}
+              </ImageList>
               <Box display="flex" justifyContent="end" mt="20px">
                 <Button type="submit" color="secondary" variant="contained">
-                  Update Category
+                  Add Play
                 </Button>
               </Box>
             </form>

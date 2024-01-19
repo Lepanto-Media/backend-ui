@@ -23,6 +23,7 @@ import Header from "../../global/Header";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
+import LoadingScreen from "../../global/screens/LoadingScreen";
 
 function ViewCategories() {
   const navigate = useNavigate();
@@ -174,7 +175,7 @@ function ViewCategories() {
             },
           }}
         >
-          {!loading && (
+          {!loading ? (
             <DataGrid
               getRowId={(row) => row._id}
               rows={categoryData.categories}
@@ -191,6 +192,8 @@ function ViewCategories() {
               }}
               pageSizeOptions={[8]}
             />
+          ) : (
+            <LoadingScreen />
           )}
         </Box>
       </Box>

@@ -21,6 +21,7 @@ import { AUTH_TOKEN, BASE_URL } from "../../global/constants";
 import Header from "../../global/Header";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import LoadingScreen from "../../global/screens/LoadingScreen";
 
 function ViewPlays() {
   const token = localStorage.getItem(AUTH_TOKEN);
@@ -111,7 +112,7 @@ function ViewPlays() {
   ];
   return (
     <Box m="0 20px">
-      <Header title="Category" subtitle="View All Categories" />
+      <Header title="Plays" subtitle="View All Plays" />
       <Button
         onClick={() => navigate("/add-play")}
         sx={{
@@ -171,7 +172,7 @@ function ViewPlays() {
           },
         }}
       >
-        {!loading && (
+        {!loading ? (
           <DataGrid
             getRowId={(row) => row._id}
             rows={playData.plays}
@@ -188,6 +189,8 @@ function ViewPlays() {
             }}
             pageSizeOptions={[8]}
           />
+        ) : (
+          <LoadingScreen />
         )}
       </Box>
     </Box>

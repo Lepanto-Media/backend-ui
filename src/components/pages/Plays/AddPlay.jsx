@@ -151,7 +151,6 @@ function AddPlay() {
       persual_script_link: persualScript,
       images: imageData,
     });
-    console.log(data);
 
     let config = {
       method: "post",
@@ -205,7 +204,7 @@ function AddPlay() {
 
   return (
     <Box m="20px">
-      <Header title="Category" subtitle="Add Category" />
+      <Header title="Plays" subtitle="Add Play" />
       {message.visible && <Toast data={message} setState={setMessage} />}
       <Formik
         onSubmit={handleFormSubmit}
@@ -541,18 +540,23 @@ function AddPlay() {
               </Button>
             </Box>
             {/* Image Viewer */}
-            <ImageList sx={{ width: "100%", height: "100%" }}>
-              <ImageListItem key="Subheader" cols={2}>
+            <ImageList
+              sx={{ width: "100%", height: "100%", justifyContent: "center" }}
+            >
+              <ImageListItem key="Subheader" cols={4}>
                 <ListSubheader component="div">Uploaded Images</ListSubheader>
               </ImageListItem>
               {imageData?.map((item) => (
-                <ImageListItem key={item.key}>
+                <ImageListItem
+                  key={item.key}
+                  sx={{ maxWidth: "300px", maxHeight: "300px" }}
+                >
                   <img
                     srcSet={`${item.src}`}
                     src={`${item.src}`}
                     alt={item.key}
                     loading="lazy"
-                    width="300px"
+                    style={{ maxWidth: "300px", maxHeight: "300px" }}
                   />
                   <ImageListItemBar
                     title={item.key}
