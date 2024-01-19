@@ -7,18 +7,11 @@ import {
   FormControl,
   InputLabel,
   Select,
-  ImageList,
-  ImageListItem,
-  ListSubheader,
-  ImageListItemBar,
-  IconButton,
 } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import Header from "../../global/Header";
-
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { AUTH_TOKEN, BASE_URL } from "../../global/constants";
 import axios from "axios";
 import Toast from "../../global/Toast";
@@ -49,60 +42,6 @@ function AddCategory() {
   useEffect(() => {
     document.title = "Lepanto, LLC - Add Category";
   }, []);
-
-  const handleImageUpload = (files) => {
-    let data = new FormData();
-    Array.from(files).forEach((file) => {
-      data.append("files", file);
-    });
-
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: `${BASE_URL}/files`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        const newImages = [...images, ...response.data.data.images];
-        setImageData(newImages);
-      })
-      .catch((error) => {
-        setMessage({
-          visible: true,
-          message: error.response.data.message,
-        });
-      });
-  };
-
-  const handleImageDelete = (key) => {
-    let config = {
-      method: "delete",
-      maxBodyLength: Infinity,
-      url: `${BASE_URL}/files/${key}`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-
-    axios
-      .request(config)
-      .then(() => {
-        const newArray = imageData.filter((item) => item.key !== key);
-        setImageData(newArray);
-      })
-      .catch((error) => {
-        setMessage({
-          visible: true,
-          message: error.response.data.message,
-        });
-      });
-  };
 
   const handleFormSubmit = (values) => {
     console.log(values);

@@ -77,7 +77,7 @@ function AddPlay() {
 
   // Page Title
   useEffect(() => {
-    document.title = "Lepanto, LLC - Add Category";
+    document.title = "Lepanto, LLC - Add Play";
   }, []);
 
   const handleFileUpload = (files, type) => {
@@ -199,6 +199,10 @@ function AddPlay() {
       })
       .catch((error) => {
         console.log(error);
+        setMessage({
+          visible: true,
+          message: error.response.data.message,
+        });
       });
   }, []);
 

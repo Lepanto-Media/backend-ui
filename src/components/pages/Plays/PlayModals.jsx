@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+import ReactDOM from "react-dom/client";
 import {
   Box,
   Button,
@@ -14,9 +16,9 @@ import {
   MenuItem,
   ImageListItemBar,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import { Formik } from "formik";
-import { useEffect, useState } from "react";
 import * as yup from "yup";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { AUTH_TOKEN, BASE_URL } from "../../global/constants";
@@ -78,6 +80,10 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
   const [originalScript, setOriginalScript] = useState(
     item.original_script_link
   );
+  const originalScriptRef = useRef();
+  const persualScriptRef = useRef();
+  const previewScriptRef = useRef();
+  const imageRef = useRef();
 
   useEffect(() => {
     let config = {
@@ -102,7 +108,16 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
 
   const token = localStorage.getItem(AUTH_TOKEN);
 
-  const handleFileUpload = (files, type) => {
+  const handleFileUpload = (files, type, ref) => {
+    // Spinner
+    const originalContent = ref.current.innerHTML;
+
+    const container = document.createElement("div");
+    ReactDOM.createRoot(container).render(<CircularProgress color="inherit" />);
+
+    ref.current.innerHTML = "";
+    ref.current.appendChild(container);
+
     let data = new FormData();
     Array.from(files).forEach((file) => {
       data.append("files", file);
@@ -138,6 +153,9 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
           visible: true,
           message: error.response.data.message,
         });
+      })
+      .finally(() => {
+        ref.current.innerHTML = originalContent;
       });
   };
 
@@ -208,7 +226,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
       ...values,
       performance_right_price: values.performance_right_price.map(
         (performance) => {
-          const { _id, ...performanceWithoutId } = performance;
+          const { _id, ...performanceWithoutId } = performance || {};
           return performanceWithoutId;
         }
       ),
@@ -216,11 +234,10 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
       preview_script_link: previewScript,
       persual_script_link: persualScript,
       images: imageData.map((image) => {
-        const { _id, ...imageWithoutId } = image;
+        const { _id, ...imageWithoutId } = image || {};
         return imageWithoutId;
       }),
     };
-    console.log(data);
     handleEdit(data);
   };
 
@@ -391,7 +408,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                     variant="contained"
                     startIcon={<CloudUploadIcon />}
                   >
-                    Upload Preview Script
+                    <span ref={previewScriptRef}>Upload Preview Script</span>
                     <input
                       style={{
                         clip: "rect(0 0 0 0)",
@@ -406,7 +423,11 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                       }}
                       type="file"
                       onChange={(event) =>
-                        handleFileUpload(event.target.files, "preview_script")
+                        handleFileUpload(
+                          event.target.files,
+                          "preview_script",
+                          previewScriptRef
+                        )
                       }
                     />
                   </Button>
@@ -415,7 +436,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                     variant="contained"
                     startIcon={<CloudUploadIcon />}
                   >
-                    Upload Persual Script
+                    <span ref={persualScriptRef}> Upload Persual Script</span>
                     <input
                       style={{
                         clip: "rect(0 0 0 0)",
@@ -430,7 +451,11 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                       }}
                       type="file"
                       onChange={(event) =>
-                        handleFileUpload(event.target.files, "persual_script")
+                        handleFileUpload(
+                          event.target.files,
+                          "persual_script",
+                          persualScriptRef
+                        )
                       }
                     />
                   </Button>
@@ -439,7 +464,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                     variant="contained"
                     startIcon={<CloudUploadIcon />}
                   >
-                    Upload Original Script
+                    <span ref={originalScriptRef}>Upload Original Script</span>
                     <input
                       style={{
                         clip: "rect(0 0 0 0)",
@@ -454,7 +479,11 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                       }}
                       type="file"
                       onChange={(event) =>
-                        handleFileUpload(event.target.files, "original_script")
+                        handleFileUpload(
+                          event.target.files,
+                          "original_script",
+                          originalScriptRef
+                        )
                       }
                     />
                   </Button>
@@ -541,7 +570,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                   variant="contained"
                   startIcon={<CloudUploadIcon />}
                 >
-                  Upload Images
+                  <span ref={imageRef}>Upload Images</span>
                   <input
                     multiple
                     style={{
@@ -557,7 +586,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                     }}
                     type="file"
                     onChange={(event) =>
-                      handleFileUpload(event.target.files, "images")
+                      handleFileUpload(event.target.files, "images", imageRef)
                     }
                   />
                 </Button>

@@ -22,6 +22,7 @@ import Header from "../../global/Header";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import LoadingScreen from "../../global/screens/LoadingScreen";
+import Toast from "../../global/Toast";
 
 function ViewPlays() {
   const token = localStorage.getItem(AUTH_TOKEN);
@@ -29,10 +30,7 @@ function ViewPlays() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const [paginationModel, setPaginationModel] = useState({
-    pageSize: 10,
-    page: 0,
-  });
+  const [message, setMessage] = useState({ visible: false, message: "" });
 
   useEffect(() => {
     setLoading(true);
@@ -54,14 +52,21 @@ function ViewPlays() {
       })
       .catch((error) => {
         console.log(error);
+        setMessage({
+          visible: true,
+          message: error.response.data.message,
+        });
       });
   }, []);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  // Set Page Title
   useEffect(() => {
-    document.title = "Lepanto, LLC - View Categories";
+    document.title = "Lepanto, LLC - View Play";
   }, []);
+
   const columns = [
     {
       field: "play_name",
@@ -111,89 +116,92 @@ function ViewPlays() {
     },
   ];
   return (
-    <Box m="0 20px">
-      <Header title="Plays" subtitle="View All Plays" />
-      <Button
-        onClick={() => navigate("/add-play")}
-        sx={{
-          background: colors.greenAccent[400],
-          color: colors.primary[900],
-          p: 2,
-        }}
-      >
-        {" "}
-        Add New Play &nbsp; <FaPlus />
-      </Button>
-      <Box
-        m="40px 0 0 0"
-        height="75vh"
-        sx={{
-          "& .MuiDataGrid-root": {
-            border: "none",
-          },
-          "& .MuiDataGrid-cell": {
-            borderBottom: "none",
-          },
-          "& .name-column--cell": {
-            color: colors.blueAccent[100],
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.blueAccent[500],
+    <>
+      <Toast data={message} setState={setMessage} />
+      <Box m="0 20px">
+        <Header title="Plays" subtitle="View All Plays" />
+        <Button
+          onClick={() => navigate("/add-play")}
+          sx={{
+            background: colors.greenAccent[400],
             color: colors.primary[900],
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[500],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.blueAccent[500],
-          },
-          "& .MuiCheckbox-root": {
-            color: `${colors.primary[200]} !important`,
-          },
-          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-            color: `${colors.primary[100]} !important`,
-          },
-          "& MuiTablePagination-toolbar": {
-            color: `${colors.primary[900]} !important`,
-          },
-          "& MuiIconButton-sizeMedium": {
-            color: `${colors.primary[900]} !important`,
-          },
-          "& .MuiDataGrid-columnHeader, .MuiDataGrid-cell": {
-            borderRight: `1px solid ${colors.primary[300]}`,
-          },
-          "& .MuiDataGrid-columnsContainer, .MuiDataGrid-cell": {
-            borderBottom: `1px solid ${colors.primary[300]}`,
-          },
-          "& MuiTablePagination-root": {
-            color: `${colors.primary[100]} !important`,
-          },
-        }}
-      >
-        {!loading ? (
-          <DataGrid
-            getRowId={(row) => row._id}
-            rows={playData.plays}
-            columns={columns}
-            loading={loading}
-            components={{ Toolbar: GridToolbar }}
-            disableSelectionOnClick
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 8,
+            p: 2,
+          }}
+        >
+          {" "}
+          Add New Play &nbsp; <FaPlus />
+        </Button>
+        <Box
+          m="40px 0 0 0"
+          height="75vh"
+          sx={{
+            "& .MuiDataGrid-root": {
+              border: "none",
+            },
+            "& .MuiDataGrid-cell": {
+              borderBottom: "none",
+            },
+            "& .name-column--cell": {
+              color: colors.blueAccent[100],
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: colors.blueAccent[500],
+              color: colors.primary[900],
+              borderBottom: "none",
+            },
+            "& .MuiDataGrid-virtualScroller": {
+              backgroundColor: colors.primary[500],
+            },
+            "& .MuiDataGrid-footerContainer": {
+              borderTop: "none",
+              backgroundColor: colors.blueAccent[500],
+            },
+            "& .MuiCheckbox-root": {
+              color: `${colors.primary[200]} !important`,
+            },
+            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+              color: `${colors.primary[100]} !important`,
+            },
+            "& MuiTablePagination-toolbar": {
+              color: `${colors.primary[900]} !important`,
+            },
+            "& MuiIconButton-sizeMedium": {
+              color: `${colors.primary[900]} !important`,
+            },
+            "& .MuiDataGrid-columnHeader, .MuiDataGrid-cell": {
+              borderRight: `1px solid ${colors.primary[300]}`,
+            },
+            "& .MuiDataGrid-columnsContainer, .MuiDataGrid-cell": {
+              borderBottom: `1px solid ${colors.primary[300]}`,
+            },
+            "& MuiTablePagination-root": {
+              color: `${colors.primary[100]} !important`,
+            },
+          }}
+        >
+          {!loading ? (
+            <DataGrid
+              getRowId={(row) => row._id}
+              rows={playData.plays}
+              columns={columns}
+              loading={loading}
+              components={{ Toolbar: GridToolbar }}
+              disableSelectionOnClick
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 8,
+                  },
                 },
-              },
-            }}
-            pageSizeOptions={[8]}
-          />
-        ) : (
-          <LoadingScreen />
-        )}
+              }}
+              pageSizeOptions={[8]}
+            />
+          ) : (
+            <LoadingScreen />
+          )}
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 }
 

@@ -139,13 +139,16 @@ function SinglePlay() {
       })
       .catch((error) => {
         console.log(error);
+        setMessage({
+          visible: true,
+          message: error.response.data.message,
+        });
       });
   };
 
   // Edit Modal
   const handleEdit = (values) => {
     let data = JSON.stringify(values);
-    console.log(data);
 
     let config = {
       method: "patch",
@@ -167,6 +170,10 @@ function SinglePlay() {
       })
       .catch((error) => {
         console.log(error);
+        setMessage({
+          visible: true,
+          message: error.response.data.message,
+        });
       });
   };
 
