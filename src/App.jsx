@@ -1,11 +1,19 @@
 import { ColorModeContext, useMode } from "./theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import { RouterProvider } from "react-router";
-import { router } from "./router";
 import { ProSidebarProvider } from "react-pro-sidebar";
+import { checkUser } from "./components/pages/Login/checkUser";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { privateRoutes, publicRoutes } from "./routes";
 
 function App() {
   const [theme, colorMode] = useMode();
+  const user = checkUser();
+  console.log(user);
+
+  const router = createBrowserRouter([
+    user ? privateRoutes() : {},
+    ...publicRoutes(),
+  ]);
 
   return (
     <>

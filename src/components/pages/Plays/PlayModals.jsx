@@ -189,7 +189,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
 
   const initialValues = {
     play_name: item.play_name,
-    category_id: item.category_id._id,
+    category_id: item?.category_id?._id,
     author: item.author,
     adapted_author: item.adapted_author,
     description: item.description,

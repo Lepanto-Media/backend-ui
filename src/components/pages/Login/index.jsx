@@ -46,7 +46,7 @@ function Login() {
       .request(config)
       .then((response) => {
         localStorage.setItem(AUTH_TOKEN, response.data.data.token);
-        navigate("/");
+        navigate(0);
       })
       .catch((error) => {
         console.log(error);

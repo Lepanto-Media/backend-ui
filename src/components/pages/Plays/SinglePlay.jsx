@@ -71,7 +71,7 @@ function SinglePlay() {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${BASE_URL}/category/${playInfo.category_id._id}`,
+      url: `${BASE_URL}/category/${playInfo?.category_id?._id}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -90,8 +90,10 @@ function SinglePlay() {
         });
         if (error.response.data.status === 404) {
           setNotExits(true);
+          setLoading(false);
         }
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   const handleClose = () =>

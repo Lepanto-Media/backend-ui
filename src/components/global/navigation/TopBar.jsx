@@ -1,22 +1,13 @@
 import React, { useContext } from "react";
-import {
-  IconButton,
-  InputBase,
-  useTheme,
-  Box,
-  Menu,
-  MenuItem,
-} from "@mui/material";
+import { IconButton, useTheme, Box, Menu, MenuItem } from "@mui/material";
 import { ColorModeContext, tokens } from "../../../theme";
 
-// Icons
-import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import SearchIcon from "@mui/icons-material/Search";
+import { AUTH_TOKEN } from "../constants";
+import { useNavigate } from "react-router-dom";
 
 function TopBar() {
+  const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
@@ -29,6 +20,10 @@ function TopBar() {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  const handleLogout = () => {
+    localStorage.removeItem(AUTH_TOKEN);
+    navigate(0);
   };
   return (
     <Box
@@ -90,7 +85,7 @@ function TopBar() {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={handleClose}>Logout</MenuItem>
+        <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </Box>
   );
