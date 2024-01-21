@@ -1,5 +1,6 @@
 import { lazy } from "react";
 import { Navigate } from "react-router-dom";
+import ErrorPage from "./components/pages/ErrorPage";
 
 const AddCategory = lazy(() =>
   import("./components/pages/Category/AddCategory")
@@ -35,6 +36,7 @@ export function privateRoutes() {
 
       // Login
       { path: "/login", element: <Navigate to="/" /> },
+      { path: "*", element: <ErrorPage item="Pgae" /> },
     ],
   };
 }

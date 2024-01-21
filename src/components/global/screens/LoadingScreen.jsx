@@ -5,8 +5,8 @@ function LoadingScreen() {
   return (
     <>
       <Box
-        height="90dvh"
-        width="80dvw"
+        height="80%"
+        width="100%"
         display="flex"
         justifyContent="center"
         alignItems="center"

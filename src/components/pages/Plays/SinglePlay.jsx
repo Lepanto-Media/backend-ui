@@ -123,13 +123,17 @@ function SinglePlay() {
 
   //Delete Modal
   const handleDelete = () => {
+    let data = JSON.stringify({
+      active: false,
+    });
     let config = {
-      method: "delete",
+      method: "patch",
       maxBodyLength: Infinity,
       url: `${BASE_URL}/play/${searchParams.get("id")}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      data: data,
     };
 
     axios

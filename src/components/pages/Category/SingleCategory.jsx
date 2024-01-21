@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   FormControlLabel,
   IconButton,
@@ -19,6 +20,7 @@ import { DeleteModal, EditModal } from "./CategroyModals";
 import Toast from "../../global/Toast";
 import { MdDelete } from "react-icons/md";
 import { tokens } from "../../../theme";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 
 const images = [
   {
@@ -71,7 +73,7 @@ function SingleCategory() {
       })
       .catch((error) => {
         setMessage({
-          vuisible: true,
+          visible: true,
           message: error.response.data.message,
         });
         if (error.response.data.status === 404) {
@@ -92,13 +94,16 @@ function SingleCategory() {
 
   //Delete Modal
   const handleDelete = () => {
+    let data = JSON.stringify({ active: !categoryInfo.active });
     let config = {
-      method: "delete",
+      method: "patch",
       maxBodyLength: Infinity,
       url: `${BASE_URL}/category/${searchParams.get("id")}`,
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      data: data,
     };
 
     axios
@@ -239,7 +244,7 @@ function SingleCategory() {
                 paddingTop: "2em",
               }}
             >
-              <IconButton
+              <Button
                 sx={{
                   background: colors.greenAccent[500],
                 }}
@@ -250,21 +255,55 @@ function SingleCategory() {
                   })
                 }
               >
-                <BiPencil fontSize={30} />
-              </IconButton>
-              <IconButton
-                sx={{
-                  background: colors.redAccent[500],
-                }}
-                onClick={() =>
-                  setModalData({
-                    isDelete: true,
-                    isEdit: false,
-                  })
-                }
-              >
-                <MdDelete fontSize={30} />
-              </IconButton>
+                {/* <BiPencil fontSize={30} /> */}
+                <Typography
+                  variant="p"
+                  sx={{ fontWeight: 500, color: "#fff", fontSize: "1.2em" }}
+                >
+                  Edit
+                </Typography>
+              </Button>
+              {categoryInfo.active ? (
+                <Button
+                  sx={{
+                    background: colors.redAccent[500],
+                  }}
+                  onClick={() =>
+                    setModalData({
+                      isDelete: true,
+                      isEdit: false,
+                    })
+                  }
+                >
+                  {/* <FaRegEyeSlash fontSize={30} /> */}
+                  <Typography
+                    variant="p"
+                    sx={{ fontWeight: 500, color: "#fff", fontSize: "1.2em" }}
+                  >
+                    Deactivate
+                  </Typography>
+                </Button>
+              ) : (
+                <Button
+                  sx={{
+                    background: colors.greenAccent[500],
+                  }}
+                  onClick={() =>
+                    setModalData({
+                      isDelete: true,
+                      isEdit: false,
+                    })
+                  }
+                >
+                  {/* <FaRegEye fontSize={30} /> */}
+                  <Typography
+                    variant="p"
+                    sx={{ fontWeight: 500, color: "#fff", fontSize: "1.2em" }}
+                  >
+                    Activate
+                  </Typography>
+                </Button>
+              )}
             </Box>
           </Card>
         </Box>

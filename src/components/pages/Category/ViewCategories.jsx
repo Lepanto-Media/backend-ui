@@ -133,6 +133,10 @@ function ViewCategories() {
           sx={{
             "& .MuiDataGrid-root": {
               border: "none",
+              color: "#fff",
+            },
+            "& .MuiIconButton-sizeSmall ": {
+              color: "#fff",
             },
             "& .MuiDataGrid-cell": {
               borderBottom: "none",

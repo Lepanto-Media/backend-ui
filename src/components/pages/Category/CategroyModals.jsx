@@ -46,7 +46,8 @@ export function DeleteModal({ item, open, handleClose, handleDelete }) {
       >
         <Box sx={style}>
           <Typography component="h1">
-            Do you want to delete {item.category_name}?
+            Do you want to {item.active ? "deactivate" : "activate"}{" "}
+            {item.category_name}?
           </Typography>
           <Box
             sx={{
@@ -56,8 +57,12 @@ export function DeleteModal({ item, open, handleClose, handleDelete }) {
               justifyContent: "space-evenly",
             }}
           >
-            <Button variant="contained" color="error" onClick={handleDelete}>
-              Delete
+            <Button
+              variant="contained"
+              color={item.active ? "error" : "success"}
+              onClick={handleDelete}
+            >
+              {item.active ? "deactivate" : "activate"}
             </Button>
             <Button variant="contained" onClick={handleClose}>
               Cancel

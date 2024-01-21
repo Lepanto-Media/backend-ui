@@ -44,7 +44,6 @@ function AddCategory() {
   }, []);
 
   const handleFormSubmit = (values) => {
-    console.log(values);
     let data = JSON.stringify({
       ...values,
     });

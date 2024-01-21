@@ -1,21 +1,8 @@
 import { useTheme } from "@emotion/react";
-import {
-  DataGrid,
-  GridToolbar,
-  useGridApiContext,
-  useGridSelector,
-  gridPageCountSelector,
-  gridPageSelector,
-} from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
 import { tokens } from "../../../theme";
-import {
-  Box,
-  Button,
-  Pagination,
-  PaginationItem,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { FaPlus } from "react-icons/fa6";
 import { AUTH_TOKEN, BASE_URL } from "../../global/constants";
 import Header from "../../global/Header";
@@ -23,6 +10,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import LoadingScreen from "../../global/screens/LoadingScreen";
 import Toast from "../../global/Toast";
+import ErrorPage from "../ErrorPage";
 
 function ViewPlays() {
   const token = localStorage.getItem(AUTH_TOKEN);
@@ -30,7 +18,11 @@ function ViewPlays() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const [message, setMessage] = useState({ visible: false, message: "" });
+  const [message, setMessage] = useState({
+    visible: false,
+    message: "",
+    status: 0,
+  });
 
   useEffect(() => {
     setLoading(true);
@@ -46,7 +38,6 @@ function ViewPlays() {
     axios
       .request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
         setplayData(response.data.data);
         setLoading(false);
       })
@@ -55,6 +46,7 @@ function ViewPlays() {
         setMessage({
           visible: true,
           message: error.response.data.message,
+          status: error.response.data.status,
         });
       });
   }, []);
@@ -115,6 +107,15 @@ function ViewPlays() {
       },
     },
   ];
+
+  if (message.status === 404) {
+    return (
+      <>
+        <ErrorPage item="Plays" />
+      </>
+    );
+  }
+
   return (
     <>
       <Toast data={message} setState={setMessage} />

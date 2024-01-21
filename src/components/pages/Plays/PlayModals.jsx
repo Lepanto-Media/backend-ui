@@ -50,7 +50,8 @@ export function DeleteModal({ item, open, handleClose, handleDelete }) {
       >
         <Box sx={style}>
           <Typography component="h1">
-            Do you want to delete {item.category_name}?
+            Do you want to {item.active ? "deactivate" : "activate"}{" "}
+            {item.category_name}?
           </Typography>
           <Box
             sx={{
@@ -60,8 +61,12 @@ export function DeleteModal({ item, open, handleClose, handleDelete }) {
               justifyContent: "space-evenly",
             }}
           >
-            <Button variant="contained" color="error" onClick={handleDelete}>
-              Delete
+            <Button
+              variant="contained"
+              color={item.active ? "error" : "success"}
+              onClick={handleDelete}
+            >
+              {item.active ? "deactivate" : "activate"}
             </Button>
             <Button variant="contained" onClick={handleClose}>
               Cancel
@@ -183,10 +188,6 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
       });
   };
 
-  const isNonMobile = useMediaQuery("(min-width: 600px)");
-
-  // console.log(item);
-
   const initialValues = {
     play_name: item.play_name,
     category_id: item?.category_id?._id,
@@ -202,6 +203,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
     poster_artist: item.poster_artist,
     related_plays: item.related_plays,
     performance_right_price: item.performance_right_price,
+    active: item.active,
   };
 
   const categorySchema = yup.object().shape({
@@ -219,6 +221,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
     persual_script_price: yup.number().required("Required"),
     poster_artist: yup.string().required("Required"),
     related_plays: yup.array(),
+    active: yup.boolean().required("Required"),
   });
 
   const handleFormSubmit = (values) => {
@@ -260,6 +263,21 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
           }) => (
             <form onSubmit={handleSubmit}>
               <Box display="flex" gap="30px" flexDirection="column">
+                <FormControl fullWidth>
+                  <InputLabel>Active</InputLabel>
+                  <Select
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.active}
+                    name="active"
+                    error={!!touched.active && !!errors.active}
+                    helperText={touched.active && errors.active}
+                    label="Active"
+                  >
+                    <MenuItem value={true}>Active</MenuItem>
+                    <MenuItem value={false}>Inactive</MenuItem>
+                  </Select>
+                </FormControl>
                 <TextField
                   fullWidth
                   variant="filled"

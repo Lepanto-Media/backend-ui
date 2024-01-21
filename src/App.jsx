@@ -8,7 +8,6 @@ import { privateRoutes, publicRoutes } from "./routes";
 function App() {
   const [theme, colorMode] = useMode();
   const user = checkUser();
-  console.log(user);
 
   const router = createBrowserRouter([
     user ? privateRoutes() : {},
