@@ -108,14 +108,6 @@ function ViewPlays() {
     },
   ];
 
-  if (message.status === 404) {
-    return (
-      <>
-        <ErrorPage item="Plays" />
-      </>
-    );
-  }
-
   return (
     <>
       <Toast data={message} setState={setMessage} />
@@ -180,7 +172,9 @@ function ViewPlays() {
             },
           }}
         >
-          {!loading ? (
+          {message.status === 404 ? (
+            <ErrorPage item="Plays" />
+          ) : !loading ? (
             <DataGrid
               getRowId={(row) => row._id}
               rows={playData.plays}

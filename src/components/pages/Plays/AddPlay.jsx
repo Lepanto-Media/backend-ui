@@ -576,7 +576,7 @@ function AddPlay() {
                 </ImageListItem>
               ))}
             </ImageList>
-            <Box display="flex" justifyContent="end" mt="20px">
+            <Box display="flex" justifyContent="end" mt="20px" mb="80px">
               <Button type="submit" color="secondary" variant="contained">
                 Add Play
               </Button>
