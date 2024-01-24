@@ -75,7 +75,27 @@ function ViewPlays() {
               textDecoration: "none",
             }}
           >
-            <Typography sx={{ ml: "5px" }}>{play_name}</Typography>
+          <Typography sx={{ ml: "5px" }}>{play_name}</Typography>
+          </Link>
+        );
+      },
+    },
+    {
+      field: "",
+      headerName: "Category Type",
+      flex: 1,
+      cellClassName: "name-column--cell",
+      width: 200,
+      renderCell: ({ row: { category_id, _id } }) => {
+        return (
+          <Link
+            to={`/category?id=${category_id._id}`}
+            style={{
+              color: colors.primary[100],
+              textDecoration: "none",
+            }}
+          >
+            <Typography sx={{ ml: "5px" }}>{category_id.category_name}</Typography>
           </Link>
         );
       },
@@ -100,7 +120,7 @@ function ViewPlays() {
             borderRadius="5px"
           >
             <Typography color={colors.primary[100]} sx={{ ml: "5px" }}>
-              {active ? "ACTIVE" : "INACTIVE"}
+              {active ? "Active" : "Inactive"}
             </Typography>
           </Box>
         );

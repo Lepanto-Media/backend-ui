@@ -67,7 +67,7 @@ function ViewCategories() {
   const columns = [
     {
       field: "category_name",
-      headerName: "NAME",
+      headerName: "Name",
       flex: 1,
       cellClassName: "name-column--cell",
       width: 200,
@@ -87,7 +87,7 @@ function ViewCategories() {
     },
     {
       field: "active",
-      headerName: "Active",
+      headerName: "Status",
       flex: 1,
       width: 150,
 
@@ -105,7 +105,7 @@ function ViewCategories() {
             borderRadius="5px"
           >
             <Typography color={colors.primary[100]} sx={{ ml: "5px" }}>
-              {active ? "ACTIVE" : "INACTIVE"}
+              {active ? "Active" : "Inactive"}
             </Typography>
           </Box>
         );
