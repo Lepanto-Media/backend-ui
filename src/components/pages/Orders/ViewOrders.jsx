@@ -1,39 +1,27 @@
 import { useTheme } from "@emotion/react";
-import {
-  DataGrid,
-  GridToolbar,
-  useGridApiContext,
-  useGridSelector,
-  gridPageCountSelector,
-  gridPageSelector,
-} from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
 import { tokens } from "../../../theme";
-import {
-  Box,
-  Button,
-  Fab,
-  IconButton,
-  Pagination,
-  PaginationItem,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
+import { FaPlus } from "react-icons/fa6";
 import { AUTH_TOKEN, BASE_URL } from "../../global/constants";
 import Header from "../../global/Header";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { FaPlus } from "react-icons/fa6";
 import LoadingScreen from "../../global/screens/LoadingScreen";
+import Toast from "../../global/Toast";
+import ErrorPage from "../ErrorPage";
 
-function ViewCategories() {
-  const navigate = useNavigate();
+function ViewOrders() {
   const token = localStorage.getItem(AUTH_TOKEN);
-  const [categoryData, setCategoryData] = useState([]);
+  const [orderData, setOrderData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  const [paginationModel, setPaginationModel] = useState({
-    pageSize: 10,
-    page: 0,
+  const [message, setMessage] = useState({
+    visible: false,
+    message: "",
+    status: 0,
   });
 
   useEffect(() => {
@@ -41,7 +29,7 @@ function ViewCategories() {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${BASE_URL}/category`,
+      url: `${BASE_URL}/order`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -50,48 +38,65 @@ function ViewCategories() {
     axios
       .request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
-        setCategoryData(response.data.data);
+        setOrderData(response.data.data);
         setLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setMessage({
+          visible: true,
+          message: error.response.data.message,
+          status: error.response.data.status,
+        });
       });
   }, []);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  // Set Page Title
   useEffect(() => {
-    document.title = "Lepanto, LLC - View Categories";
+    document.title = "Lepanto, LLC - View Orders";
   }, []);
+
   const columns = [
     {
-      field: "category_name",
-      headerName: "Name",
+      field: "order_id",
+      headerName: "NAME",
       flex: 1,
       cellClassName: "name-column--cell",
       width: 200,
-      renderCell: ({ row: { category_name, _id } }) => {
+      renderCell: ({ row: { order_id, _id } }) => {
         return (
           <Link
-            to={`/category?id=${_id}`}
+            to={`/order?id=${_id}`}
             style={{
               color: colors.primary[100],
               textDecoration: "none",
             }}
           >
-            <Typography sx={{ ml: "5px" }}>{category_name}</Typography>
+            <Typography sx={{ ml: "5px" }}>{order_id}</Typography>
           </Link>
         );
       },
     },
     {
-      field: "active",
+      field: "",
+      headerName: "Category Type",
+      flex: 1,
+      cellClassName: "name-column--cell",
+      width: 200,
+      renderCell: ({ row: { status } }) => {
+        return <Typography sx={{ ml: "5px" }}>{status}</Typography>;
+      },
+    },
+    {
+      field: "status",
       headerName: "Status",
       flex: 1,
       width: 150,
 
-      renderCell: ({ row: { active } }) => {
+      renderCell: ({ row: { payment_completed } }) => {
         return (
           <Box
             width="100%"
@@ -100,33 +105,26 @@ function ViewCategories() {
             display="flex"
             justifyContent="center"
             backgroundColor={
-              active ? colors.greenAccent[600] : colors.redAccent[700]
+              payment_completed
+                ? colors.greenAccent[600]
+                : colors.redAccent[700]
             }
             borderRadius="5px"
           >
             <Typography color={colors.primary[100]} sx={{ ml: "5px" }}>
-              {active ? "Active" : "Inactive"}
+              {payment_completed ? "COMPLETE" : "INCOMPLETE"}
             </Typography>
           </Box>
         );
       },
     },
   ];
+
   return (
     <>
+      <Toast data={message} setState={setMessage} />
       <Box m="0 20px">
-        <Header title="Category" subtitle="View All Categories" />
-        <Button
-          onClick={() => navigate("/add-category")}
-          sx={{
-            background: colors.greenAccent[400],
-            color: colors.primary[900],
-            p: 2,
-          }}
-        >
-          {" "}
-          Add New Category &nbsp; <FaPlus />
-        </Button>
+        <Header title="Orders" subtitle="View All Orders" />
         <Box
           m="40px 0 0 0"
           height="75vh"
@@ -135,9 +133,6 @@ function ViewCategories() {
             "& .MuiDataGrid-root": {
               border: "none",
               color: "#fff !important",
-            },
-            "& .MuiIconButton-sizeSmall ": {
-              color: "#fff",
             },
             "& .MuiDataGrid-cell": {
               borderBottom: "none",
@@ -164,7 +159,7 @@ function ViewCategories() {
               color: `${colors.primary[100]} !important`,
             },
             "& MuiTablePagination-toolbar": {
-              color: `#fff !important`,
+              color: `${colors.primary[900]} !important`,
             },
             "& MuiIconButton-sizeMedium": {
               color: `${colors.primary[900]} !important`,
@@ -175,12 +170,17 @@ function ViewCategories() {
             "& .MuiDataGrid-columnsContainer, .MuiDataGrid-cell": {
               borderBottom: `1px solid ${colors.primary[300]}`,
             },
+            "& MuiTablePagination-root": {
+              color: `${colors.primary[100]} !important`,
+            },
           }}
         >
-          {!loading ? (
+          {message.status === 404 ? (
+            <ErrorPage item="Plays" />
+          ) : !loading ? (
             <DataGrid
-              getRowId={(row) => row._id}
-              rows={categoryData.categories}
+              getRowId={(row) => row.order_id}
+              rows={orderData.order}
               columns={columns}
               loading={loading}
               components={{ Toolbar: GridToolbar }}
@@ -203,4 +203,4 @@ function ViewCategories() {
   );
 }
 
-export default ViewCategories;
+export default ViewOrders;

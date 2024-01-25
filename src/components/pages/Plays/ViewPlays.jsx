@@ -75,7 +75,7 @@ function ViewPlays() {
               textDecoration: "none",
             }}
           >
-          <Typography sx={{ ml: "5px" }}>{play_name}</Typography>
+            <Typography sx={{ ml: "5px" }}>{play_name}</Typography>
           </Link>
         );
       },
@@ -95,7 +95,9 @@ function ViewPlays() {
               textDecoration: "none",
             }}
           >
-            <Typography sx={{ ml: "5px" }}>{category_id.category_name}</Typography>
+            <Typography sx={{ ml: "5px" }}>
+              {category_id.category_name}
+            </Typography>
           </Link>
         );
       },
@@ -148,8 +150,10 @@ function ViewPlays() {
           m="40px 0 0 0"
           height="75vh"
           sx={{
+            marginBottom: "5em",
             "& .MuiDataGrid-root": {
               border: "none",
+              color: "#fff !important",
             },
             "& .MuiDataGrid-cell": {
               borderBottom: "none",

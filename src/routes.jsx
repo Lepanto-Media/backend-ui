@@ -1,6 +1,8 @@
 import { lazy } from "react";
 import { Navigate } from "react-router-dom";
 import ErrorPage from "./components/pages/ErrorPage";
+import ViewOrders from "./components/pages/Orders/ViewOrders";
+import SingleOrder from "./components/pages/Orders/SingleOrder";
 
 const AddCategory = lazy(() =>
   import("./components/pages/Category/AddCategory")
@@ -33,6 +35,9 @@ export function privateRoutes() {
       { path: "/add-play", element: <AddPlay /> },
       { path: "/view-plays", element: <ViewPlays /> },
       { path: "/play", element: <SinglePlay /> },
+
+      { path: "/all-orders", element: <ViewOrders /> },
+      { path: "/order", element: <SingleOrder /> },
 
       // Login
       { path: "/login", element: <Navigate to="/" /> },
