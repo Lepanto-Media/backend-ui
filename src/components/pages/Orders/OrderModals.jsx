@@ -1,23 +1,47 @@
-export function EditModal({ item, open, handleClose, handleEdit }) {
-  const token = localStorage.getItem(AUTH_TOKEN);
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  Modal,
+  Select,
+  TextField,
+  MenuItem,
+} from "@mui/material";
+import { Formik, FieldArray, Field } from "formik";
+import * as yup from "yup";
+import { AUTH_TOKEN } from "../../global/constants";
 
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
+export function EditModal({ item, open, handleClose, handleEdit }) {
   const initialValues = {
     status: item.status,
-    admin_notes: item.category_type,
+    admin_notes: item.admin_notes || [],
   };
 
   const categorySchema = yup.object().shape({
-    category_name: yup.string().required("Required"),
-    category_type: yup.string().required("Required"),
-    active: yup.boolean().required("Required"),
+    status: yup.string().required("Required"),
+    admin_notes: yup.array().required("Required"),
   });
+
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
         <Formik
-          onSubmit={handleEdit}
           initialValues={initialValues}
           validationSchema={categorySchema}
+          onSubmit={handleEdit}
         >
           {({
             values,
@@ -28,105 +52,67 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
             handleSubmit,
           }) => (
             <form onSubmit={handleSubmit}>
-              <Box display="flex" gap="30px" flexDirection="column">
-                <TextField
-                  fullWidth
-                  variant="filled"
-                  type="text"
-                  label="Category Name"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.category_name}
-                  name="category_name"
-                  error={!!touched.category_name && !!errors.category_name}
-                  helperText={touched.category_name && errors.category_name}
-                />
+              <Box display="flex" flexDirection="column" gap={2}>
                 <FormControl fullWidth>
-                  <InputLabel>Category Type</InputLabel>
+                  <InputLabel>Status</InputLabel>
                   <Select
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.category_type}
-                    name="category_type"
-                    error={!!touched.category_type && !!errors.category_type}
-                    helperText={touched.category_type && errors.category_type}
-                    label="Category Type"
+                    value={values.status}
+                    name="status"
+                    error={!!touched.status && !!errors.status}
+                    helperText={touched.status && errors.status}
+                    label="Status"
                   >
-                    <MenuItem value={"PLAY"}>PLAY</MenuItem>
-                    <MenuItem value={"TEST"}>TEST</MenuItem>
+                    <MenuItem value="NEW">NEW</MenuItem>
+                    <MenuItem value="INPROGRESS">INPROGRESS</MenuItem>
+                    <MenuItem value="DONE">DONE</MenuItem>
+                    <MenuItem value="CANCELED"> CANCELED</MenuItem>
                   </Select>
                 </FormControl>
-                <FormControl fullWidth>
-                  <InputLabel>Active</InputLabel>
-                  <Select
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.active}
-                    name="active"
-                    error={!!touched.active && !!errors.active}
-                    helperText={touched.active && errors.active}
-                    label="Active"
-                  >
-                    <MenuItem value={true}>Active</MenuItem>
-                    <MenuItem value={false}>Inactive</MenuItem>
-                  </Select>
-                </FormControl>
-                {/* Image Uploader */}
-                {/* <Button
-                    component="label"
-                    variant="contained"
-                    startIcon={<CloudUploadIcon />}
-                    sx={{ width: "100%" }}
-                  >
-                    Upload Images
-                    <input
-                      multiple
-                      style={{
-                        clip: "rect(0 0 0 0)",
-                        clipPath: "inset(50%)",
-                        height: 1,
-                        overflow: "hidden",
-                        position: "absolute",
-                        bottom: 0,
-                        left: 0,
-                        whiteSpace: "nowrap",
-                        width: 1,
-                      }}
-                      type="file"
-                      onChange={(event) => handleImageUpload(event.target.files)}
-                    />
-                  </Button> */}
-              </Box>
-              {/* Images Viewer */}
-              {/* <ImageList sx={{ width: "100%", height: "100%" }}>
-                  <ImageListItem key="Subheader" cols={2}>
-                    <ListSubheader component="div">Uploaded Images</ListSubheader>
-                  </ImageListItem>
-                  {imageData?.map((item) => (
-                    <ImageListItem key={item.key}>
-                      <img
-                        srcSet={`${item.src}`}
-                        src={`${item.src}`}
-                        alt={item.key}
-                        loading="lazy"
-                      />
-                      <ImageListItemBar
-                        title={item.key}
-                        actionIcon={
-                          <IconButton
-                            sx={{ color: "rgba(255, 0, 0, 0.75)" }}
-                            onClick={() => handleImageDelete(item.key)}
+
+                <FieldArray name="admin_notes">
+                  {({ push, remove }) => (
+                    <>
+                      {values.admin_notes.map((note, index) => (
+                        <Box
+                          key={index}
+                          display="flex"
+                          alignItems="center"
+                          gap={2}
+                        >
+                          <Field
+                            as={TextField}
+                            fullWidth
+                            variant="filled"
+                            type="text"
+                            label={`Admin Note ${index + 1}`}
+                            name={`admin_notes.${index}`}
+                          />
+                          <Button
+                            type="button"
+                            variant="outlined"
+                            onClick={() => remove(index)}
                           >
-                            <MdDelete />
-                          </IconButton>
-                        }
-                      />
-                    </ImageListItem>
-                  ))}
-                </ImageList> */}
-              <Box display="flex" justifyContent="end" mt="20px">
+                            Remove
+                          </Button>
+                        </Box>
+                      ))}
+                      <Button
+                        type="button"
+                        variant="outlined"
+                        onClick={() => push("")}
+                      >
+                        Add Note
+                      </Button>
+                    </>
+                  )}
+                </FieldArray>
+              </Box>
+
+              <Box display="flex" justifyContent="end" mt={2}>
                 <Button type="submit" color="secondary" variant="contained">
-                  Update Category
+                  Update Order
                 </Button>
               </Box>
             </form>

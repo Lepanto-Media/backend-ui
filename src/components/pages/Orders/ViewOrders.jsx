@@ -81,8 +81,8 @@ function ViewOrders() {
       },
     },
     {
-      field: "",
-      headerName: "Category Type",
+      field: "status",
+      headerName: "Order Status",
       flex: 1,
       cellClassName: "name-column--cell",
       width: 200,
@@ -91,8 +91,8 @@ function ViewOrders() {
       },
     },
     {
-      field: "status",
-      headerName: "Status",
+      field: "payment_completed",
+      headerName: "Payment Status",
       flex: 1,
       width: 150,
 

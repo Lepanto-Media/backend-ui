@@ -1,4 +1,14 @@
-import { Box, Button, Card, Typography, useTheme } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  Card,
+  Chip,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { AUTH_TOKEN, BASE_URL } from "../../global/constants";
@@ -9,6 +19,10 @@ import Header from "../../global/Header";
 import Toast from "../../global/Toast";
 
 import { tokens } from "../../../theme";
+
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ErrorPage from "../ErrorPage";
+import { EditModal } from "./OrderModals";
 
 function SingleOrder() {
   const navigate = useNavigate();
@@ -74,7 +88,7 @@ function SingleOrder() {
     let config = {
       method: "patch",
       maxBodyLength: Infinity,
-      url: `${BASE_URL}/category/${searchParams.get("id")}`,
+      url: `${BASE_URL}/order/${searchParams.get("id")}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -97,7 +111,7 @@ function SingleOrder() {
   if (loading && notExist) {
     return (
       <>
-        <h1>NOt Exist</h1>
+        <ErrorPage />
       </>
     );
   } else if (loading) {
@@ -110,16 +124,19 @@ function SingleOrder() {
 
   return (
     <>
-      {/* <EditModal
+      <EditModal
         item={orderInfo}
         open={modalData.isEdit}
         handleClose={handleClose}
         handleEdit={handleEdit}
-      /> */}
+      />
 
       <Toast data={message} setState={setMessage} />
 
-      <Box m="0 20px" sx={{ background: colors.primary[500] }}>
+      <Box
+        m="0 20px"
+        sx={{ background: colors.primary[500], marginBottom: "5em" }}
+      >
         <Header title="Category" subtitle="View Single Category" />
         <Box
           sx={{
@@ -129,20 +146,35 @@ function SingleOrder() {
             alignItems: "center",
             flexDirection: {
               xs: "column",
-              md: "row",
+              md: "column",
             },
           }}
         >
           <Card
             sx={{
-              flex: 1,
-              maxWidth: {
-                xs: "100%",
-                md: "60%",
-              },
+              width: "100%",
               padding: "2em",
+              position: "relative",
+              flexDirection: "column",
+              flex: 1,
             }}
           >
+            <Box
+              sx={{
+                position: "absolute",
+                top: 10,
+                right: 5,
+              }}
+            >
+              <Chip
+                label={`Status: ${orderInfo.status}`}
+                color="success"
+                variant="outlined"
+                sx={{
+                  fontSize: "1.2em",
+                }}
+              />
+            </Box>
             <Box
               sx={{
                 display: "flex",
@@ -153,48 +185,142 @@ function SingleOrder() {
             >
               <Typography
                 variant="p"
-                sx={{ fontSize: "2.5em", fontWeight: 600 }}
+                sx={{ fontSize: "1.5em", fontWeight: 600 }}
               >
                 Oder ID: {orderInfo.order_id}
               </Typography>
-              <Typography variant="p" sx={{ fontSize: "1.5em" }}>
-                Status: {orderInfo.status}
-              </Typography>
-              <Typography variant="p" sx={{ fontSize: "1.5em" }}>
-                Total Amount: ${orderInfo.total_amount}
-              </Typography>
-              <Typography variant="p" sx={{ fontSize: "1.5em" }}>
-                Payment Status:{" "}
-                {orderInfo.payment_completed ? "Completed" : "Incomplete"}
-              </Typography>
               <Box
-                width="100%"
-                m="0 auto"
-                p="5px"
-                display="flex"
-                justifyContent="center"
-                backgroundColor={
-                  orderInfo.active
-                    ? colors.greenAccent[600]
-                    : colors.redAccent[700]
-                }
-                borderRadius="5px"
+                sx={{
+                  display: "flex",
+                  textAlign: "center",
+                  gap: 2,
+                  justifyContent: "space-between",
+                  pt: 5,
+                  flexDirection: {
+                    xs: "column",
+                    md: "row",
+                  },
+                }}
               >
-                <Typography color={colors.primary[100]} sx={{ ml: "5px" }}>
-                  {orderInfo.active ? "ACTIVE" : "INACTIVE"}
-                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "center",
+                  }}
+                >
+                  <Typography variant="p" sx={{ fontSize: "1.1em" }}>
+                    Created At
+                  </Typography>
+                  <Typography variant="p" sx={{ fontSize: "1.1em" }}>
+                    {orderInfo.created_at}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "center",
+                  }}
+                >
+                  <Typography variant="p" sx={{ fontSize: "1.1em" }}>
+                    Customer Name
+                  </Typography>
+                  <Typography variant="p" sx={{ fontSize: "1.1em" }}>
+                    {orderInfo.billing_details.customer_name}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "center",
+                  }}
+                >
+                  <Typography variant="p" sx={{ fontSize: "1.1em" }}>
+                    Customer Email
+                  </Typography>
+                  <Typography variant="p" sx={{ fontSize: "1.1em" }}>
+                    {orderInfo.billing_details.email}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "center",
+                  }}
+                >
+                  <Typography variant="p" sx={{ fontSize: "1.1em" }}>
+                    Customer Phone
+                  </Typography>
+                  <Typography variant="p" sx={{ fontSize: "1.1em" }}>
+                    {orderInfo.billing_details.phone_number}
+                  </Typography>
+                </Box>
               </Box>
+            </Box>
+
+            <Box sx={{ display: "flex" }}>
+              <Card
+                sx={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  padding: 2,
+                }}
+              >
+                <Typography
+                  variant="p"
+                  sx={{ fontSize: "1.5em", fontWeight: 600 }}
+                >
+                  Payment Details
+                </Typography>
+                <Box
+                  sx={{
+                    paddingTop: 3,
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <Typography variant="p" sx={{ fontSize: "1.2em" }}>
+                    Total Items: {orderInfo.plays.length}
+                  </Typography>
+                  <Typography variant="p" sx={{ fontSize: "1.2em" }}>
+                    Total Amount: ${orderInfo.total_amount}
+                  </Typography>
+                  <Typography variant="p" sx={{ fontSize: "1.2em" }}>
+                    Payment Status:{" "}
+                    {orderInfo.payment_completed ? "COMPLETED" : "INCOMPLETE"}
+                  </Typography>
+                </Box>
+              </Card>
+            </Box>
+            <Box
+              sx={{ paddingTop: 2, display: "flex", flexDirection: "column" }}
+            >
+              <Typography variant="p" sx={{ fontSize: "1.2em" }}>
+                Customer Notes: {orderInfo?.customer_notes}
+              </Typography>
+              {console.log(orderInfo.admin_notes)}
+              <Typography variant="p" sx={{ fontSize: "1.2em" }}>
+                Admin Notes:{" "}
+                {orderInfo?.admin_notes.map((note, index) => (
+                  <Typography sx={{ fontSize: "inherit" }}>
+                    {index + 1} - {note}{" "}
+                  </Typography>
+                ))}
+              </Typography>
             </Box>
             <Box
               sx={{
-                display: "flex",
-                justifyContent: "space-evenly",
-                paddingTop: "2em",
+                paddingTop: "1em",
               }}
             >
               <Button
                 sx={{
                   background: colors.greenAccent[500],
+                  width: "100%",
                 }}
                 onClick={() =>
                   setModalData({
@@ -211,6 +337,73 @@ function SingleOrder() {
                   Edit
                 </Typography>
               </Button>
+            </Box>
+          </Card>
+          <Card
+            sx={{
+              flex: 1,
+              width: "100%",
+              padding: "2em",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.5em",
+                pb: "2em",
+              }}
+            >
+              <Typography
+                variant="p"
+                sx={{ fontSize: "2.5em", fontWeight: 600 }}
+              >
+                Plays
+              </Typography>
+              <Box>
+                {orderInfo.plays.map((play) => (
+                  <Accordion>
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls="panel1-content"
+                      id="panel1-header"
+                    >
+                      {play.play_id.play_name}
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      {play.is_persual_script_order
+                        ? "PERSUAL RIGHTS"
+                        : "PERFORMANCE RIGHTS"}
+                      {!play.is_persual_script_order
+                        ? play.performance_info.map((info, index) => (
+                            <>
+                              <Box sx={{ display: "flex", gap: 2 }}>
+                                <Typography
+                                  variant="p"
+                                  sx={{ fontSize: "1.1em" }}
+                                >
+                                  {index + 1}
+                                </Typography>
+                                <Typography
+                                  variant="p"
+                                  sx={{ fontSize: "1.1em" }}
+                                >
+                                  {info.performance_date}
+                                </Typography>
+                                <Typography
+                                  variant="p"
+                                  sx={{ fontSize: "1.1em" }}
+                                >
+                                  {info.performance_address}
+                                </Typography>
+                              </Box>
+                            </>
+                          ))
+                        : null}
+                    </AccordionDetails>
+                  </Accordion>
+                ))}
+              </Box>
             </Box>
           </Card>
         </Box>
