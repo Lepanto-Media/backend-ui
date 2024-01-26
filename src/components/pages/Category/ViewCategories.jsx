@@ -164,7 +164,7 @@ function ViewCategories() {
               color: `${colors.primary[100]} !important`,
             },
             "& MuiTablePagination-toolbar": {
-              color: `#fff !important`,
+              color: `#fff`,
             },
             "& MuiIconButton-sizeMedium": {
               color: `${colors.primary[900]} !important`,

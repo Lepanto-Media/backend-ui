@@ -180,7 +180,7 @@ function ViewPlays() {
               color: `${colors.primary[100]} !important`,
             },
             "& MuiTablePagination-toolbar": {
-              color: `${colors.primary[900]} !important`,
+              color: `#fff`,
             },
             "& MuiIconButton-sizeMedium": {
               color: `${colors.primary[900]} !important`,

@@ -75,7 +75,7 @@ function ViewOrders() {
               textDecoration: "none",
             }}
           >
-            <Typography sx={{ ml: "5px" }}>{order_id}</Typography>
+            <Typography sx={{ ml: "5px" }}>#{order_id}</Typography>
           </Link>
         );
       },
@@ -159,7 +159,7 @@ function ViewOrders() {
               color: `${colors.primary[100]} !important`,
             },
             "& MuiTablePagination-toolbar": {
-              color: `${colors.primary[900]} !important`,
+              color: `#fff`,
             },
             "& MuiIconButton-sizeMedium": {
               color: `${colors.primary[900]} !important`,
