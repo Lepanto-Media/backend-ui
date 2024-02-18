@@ -168,6 +168,7 @@ function SideBar() {
             to="/view-plays"
             icon={<GiDramaMasks size={iconSize} color={colors.primary[900]} />}
             selected={selected}
+            className={ selected ? "active" : "" }
             setSelected={() => setSelected("Plays")}
           />
 

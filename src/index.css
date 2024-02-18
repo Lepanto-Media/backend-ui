@@ -59,3 +59,8 @@ html, body, #root, .app, .content {
     transform: rotate(360deg);
   }
 }
+
+
+.active{
+  background-color: #011324;
+}
