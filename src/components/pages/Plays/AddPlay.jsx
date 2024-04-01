@@ -12,6 +12,7 @@ import {
   ListSubheader,
   ImageListItemBar,
   IconButton,
+  CircularProgress
 } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -64,9 +65,12 @@ function AddPlay() {
 
   const [categories, setCategories] = useState([]);
   const [imageData, setImageData] = useState([]);
+  const [gallaryData, setGallaryData] = useState([]);
   const [previewScript, setPreviewScript] = useState({});
   const [persualScript, setPersualScript] = useState({});
   const [originalScript, setOriginalScript] = useState({});
+  const [imageUploading, setImageUploading] = useState(false);
+  const [scriptUploading, setScriptUploading] = useState(false);
   const [message, setMessage] = useState({
     visible: false,
     message: "",
@@ -86,6 +90,10 @@ function AddPlay() {
       data.append("files", file);
     });
 
+    //setting uploading true to show spinner
+    if (type === "images" || type === "gallary") setImageUploading(true);
+    if (type === "preview_script" || type === "persual_script" || type === "original_script") setScriptUploading(true);
+
     let config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -99,6 +107,10 @@ function AddPlay() {
     axios
       .request(config)
       .then((response) => {
+        //setting uploading true to hide spinner
+        if (type === "images" || type === "gallary") setImageUploading(false);
+        if (type === "preview_script" || type === "persual_script" || type === "original_script") setScriptUploading(false);
+
         if (type === "preview_script") {
           setPreviewScript(response.data.data.images[0]);
         } else if (type === "persual_script") {
@@ -108,6 +120,10 @@ function AddPlay() {
         } else if (type === "images") {
           const newImages = [...imageData, ...response.data.data.images];
           setImageData(newImages);
+        }
+        else if (type === "gallary") {
+          const newImages = [...gallaryData, ...response.data.data.images];
+          setGallaryData(newImages);
         }
       })
       .catch((error) => {
@@ -119,7 +135,7 @@ function AddPlay() {
       });
   };
 
-  const handleFileDelete = (key) => {
+  const handleFileDelete = (key, type) => {
     let config = {
       method: "delete",
       maxBodyLength: Infinity,
@@ -132,8 +148,15 @@ function AddPlay() {
     axios
       .request(config)
       .then(() => {
-        const newArray = imageData.filter((item) => item.key !== key);
-        setImageData(newArray);
+        //checking if featured image is deleted or gallary image is delated
+        if (type === "image") {
+          const newArray = imageData.filter((item) => item.key !== key);
+          setImageData(newArray);
+        }
+        else if (type === "gallary") {
+          const newArray = gallaryData.filter((item) => item.key !== key);
+          setGallaryData(newArray);
+        }
       })
       .catch((error) => {
         setMessage({
@@ -150,6 +173,7 @@ function AddPlay() {
       preview_script_link: previewScript,
       persual_script_link: persualScript,
       images: imageData,
+      gallary: gallaryData,
     });
 
     let config = {
@@ -367,7 +391,7 @@ function AddPlay() {
                   helperText={touched.run_time && errors.run_time}
                 />
               </Box>
-              <Box sx={{ display: "flex", gap: 2 }}>
+              <Box display="flex" justifyContent="start" alignItems="center" gap="20px">
                 <Button
                   component="label"
                   variant="contained"
@@ -440,6 +464,10 @@ function AddPlay() {
                     }
                   />
                 </Button>
+                {
+                  /* Uploading spinner */
+                  scriptUploading && <CircularProgress size={"25px"} mt={"20px"}/>
+                }
               </Box>
               <Box sx={{ display: "flex", gap: 2 }}>
                 <TextField
@@ -517,38 +545,71 @@ function AddPlay() {
               </Box>
               {/* Images Uploader*/}
 
-              <Button
-                component="label"
-                variant="contained"
-                startIcon={<CloudUploadIcon />}
-              >
-                Upload Images
-                <input
-                  multiple
-                  style={{
-                    clip: "rect(0 0 0 0)",
-                    clipPath: "inset(50%)",
-                    height: 1,
-                    overflow: "hidden",
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    whiteSpace: "nowrap",
-                    width: 1,
-                  }}
-                  type="file"
-                  onChange={(event) =>
-                    handleFileUpload(event.target.files, "images")
-                  }
-                />
-              </Button>
+              <Box display="flex" justifyContent="start" alignItems="center" gap="20px" mt="20px" mb="20px">
+                <Button
+                  component="label"
+                  variant="contained"
+                  startIcon={<CloudUploadIcon />}
+                >
+                  Upload Featured Images
+                  <input
+                    multiple
+                    style={{
+                      clip: "rect(0 0 0 0)",
+                      clipPath: "inset(50%)",
+                      height: 1,
+                      overflow: "hidden",
+                      position: "absolute",
+                      bottom: 0,
+                      left: 0,
+                      whiteSpace: "nowrap",
+                      width: 1,
+                    }}
+                    type="file"
+                    onChange={(event) =>
+                      handleFileUpload(event.target.files, "images")
+                    }
+                  />
+                </Button>
+                <Button
+                  component="label"
+                  variant="contained"
+                  startIcon={<CloudUploadIcon />}
+                >
+                  Upload Gallary Images
+                  <input
+                    multiple
+                    style={{
+                      clip: "rect(0 0 0 0)",
+                      clipPath: "inset(50%)",
+                      height: 1,
+                      overflow: "hidden",
+                      position: "absolute",
+                      bottom: 0,
+                      left: 0,
+                      whiteSpace: "nowrap",
+                      width: 1,
+                    }}
+                    type="file"
+                    onChange={(event) =>
+                      handleFileUpload(event.target.files, "gallary")
+                    }
+                  />
+                </Button>
+                {
+                  /* Uploading spinner */
+                  imageUploading && <CircularProgress size={"25px"}/>
+                }
+              </Box>
+
             </Box>
+
             {/* Image Viewer */}
             <ImageList
               sx={{ width: "100%", height: "100%", justifyContent: "center" }}
             >
               <ImageListItem key="Subheader" cols={4}>
-                <ListSubheader component="div">Uploaded Images</ListSubheader>
+                <ListSubheader component="div">Uploaded Featured Images</ListSubheader>
               </ImageListItem>
               {imageData?.map((item) => (
                 <ImageListItem
@@ -567,7 +628,7 @@ function AddPlay() {
                     actionIcon={
                       <IconButton
                         sx={{ color: "rgba(255, 0, 0, 0.75)" }}
-                        onClick={() => handleFileDelete(item.key)}
+                        onClick={() => handleFileDelete(item.key, "image")}
                       >
                         <MdDelete />
                       </IconButton>
@@ -576,6 +637,39 @@ function AddPlay() {
                 </ImageListItem>
               ))}
             </ImageList>
+            <ImageList
+              sx={{ width: "100%", height: "100%", justifyContent: "center" }}
+            >
+              <ImageListItem key="Subheader" cols={4}>
+                <ListSubheader component="div">Uploaded Gallary Images</ListSubheader>
+              </ImageListItem>
+              {gallaryData?.map((item) => (
+                <ImageListItem
+                  key={item.key}
+                  sx={{ maxWidth: "300px", maxHeight: "300px" }}
+                >
+                  <img
+                    srcSet={`${item.src}`}
+                    src={`${item.src}`}
+                    alt={item.key}
+                    loading="lazy"
+                    style={{ maxWidth: "300px", maxHeight: "300px" }}
+                  />
+                  <ImageListItemBar
+                    title={item.key}
+                    actionIcon={
+                      <IconButton
+                        sx={{ color: "rgba(255, 0, 0, 0.75)" }}
+                        onClick={() => handleFileDelete(item.key, "gallary")}
+                      >
+                        <MdDelete />
+                      </IconButton>
+                    }
+                  />
+                </ImageListItem>
+              ))}
+            </ImageList>
+
             <Box display="flex" justifyContent="end" mt="20px" mb="80px">
               <Button type="submit" color="secondary" variant="contained">
                 Add Play

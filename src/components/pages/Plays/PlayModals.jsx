@@ -12,7 +12,6 @@ import {
   Select,
   TextField,
   Typography,
-  useMediaQuery,
   MenuItem,
   ImageListItemBar,
   IconButton,
@@ -79,6 +78,7 @@ export function DeleteModal({ item, open, handleClose, handleDelete }) {
 }
 export function EditModal({ item, open, handleClose, handleEdit }) {
   const [imageData, setImageData] = useState(item.images);
+  const [gallaryData, setGallaryData] = useState(item.gallary);
   const [categories, setCategories] = useState([]);
   const [previewScript, setPreviewScript] = useState(item.preview_script_link);
   const [persualScript, setPersualScript] = useState(item.persual_script_link);
@@ -89,6 +89,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
   const persualScriptRef = useRef();
   const previewScriptRef = useRef();
   const imageRef = useRef();
+  const gallaryRef = useRef();
 
   useEffect(() => {
     let config = {
@@ -118,7 +119,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
     const originalContent = ref.current.innerHTML;
 
     const container = document.createElement("div");
-    ReactDOM.createRoot(container).render(<CircularProgress color="inherit" />);
+    ReactDOM.createRoot(container).render(<CircularProgress color="inherit" size="25px"/>);
 
     ref.current.innerHTML = "";
     ref.current.appendChild(container);
@@ -150,6 +151,9 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
         } else if (type === "images") {
           const newImages = [...imageData, ...response.data.data.images];
           setImageData(newImages);
+        } else if (type === "gallary") {
+          const newImages = [...gallaryData, ...response.data.data.images];
+          setGallaryData(newImages);
         }
       })
       .catch((error) => {
@@ -164,7 +168,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
       });
   };
 
-  const handleFileDelete = (key) => {
+  const handleFileDelete = (key, type) => {
     let config = {
       method: "delete",
       maxBodyLength: Infinity,
@@ -177,8 +181,15 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
     axios
       .request(config)
       .then(() => {
-        const newArray = imageData.filter((item) => item.key !== key);
-        setImageData(newArray);
+        //checking if featured image is deleted or gallary image is delated
+        if (type === "image") {
+          const newArray = imageData.filter((item) => item.key !== key);
+          setImageData(newArray);
+        }
+        else if (type === "gallary") {
+          const newArray = gallaryData.filter((item) => item.key !== key);
+          setGallaryData(newArray);
+        }
       })
       .catch((error) => {
         setMessage({
@@ -240,6 +251,10 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
         const { _id, ...imageWithoutId } = image || {};
         return imageWithoutId;
       }),
+      gallary: gallaryData.map((image) => {
+        const { _id, ...imageWithoutId } = image || {};
+        return imageWithoutId;
+      })
     };
     handleEdit(data);
   };
@@ -588,7 +603,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                   variant="contained"
                   startIcon={<CloudUploadIcon />}
                 >
-                  <span ref={imageRef}>Upload Images</span>
+                  <span ref={imageRef}>Upload Featured Images</span>
                   <input
                     multiple
                     style={{
@@ -608,11 +623,36 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                     }
                   />
                 </Button>
+                <Button
+                  component="label"
+                  variant="contained"
+                  startIcon={<CloudUploadIcon />}
+                >
+                  <span ref={gallaryRef}>Upload Gallary Images</span>
+                  <input
+                    multiple
+                    style={{
+                      clip: "rect(0 0 0 0)",
+                      clipPath: "inset(50%)",
+                      height: 1,
+                      overflow: "hidden",
+                      position: "absolute",
+                      bottom: 0,
+                      left: 0,
+                      whiteSpace: "nowrap",
+                      width: 1,
+                    }}
+                    type="file"
+                    onChange={(event) =>
+                      handleFileUpload(event.target.files, "gallary", gallaryRef)
+                    }
+                  />
+                </Button>
               </Box>
               {/* Image Viewer */}
               <ImageList sx={{ width: "100%", height: "100%" }}>
                 <ImageListItem key="Subheader" cols={2}>
-                  <ListSubheader component="div">Uploaded Images</ListSubheader>
+                  <ListSubheader component="div" sx={{ padding: "0px" }}>Uploaded Featured Images</ListSubheader>
                 </ImageListItem>
                 {imageData?.map((item) => (
                   <ImageListItem key={item.key}>
@@ -628,7 +668,34 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                       actionIcon={
                         <IconButton
                           sx={{ color: "rgba(255, 0, 0, 0.75)" }}
-                          onClick={() => handleFileDelete(item.key)}
+                          onClick={() => handleFileDelete(item.key, "image")}
+                        >
+                          <MdDelete />
+                        </IconButton>
+                      }
+                    />
+                  </ImageListItem>
+                ))}
+              </ImageList>
+              <ImageList sx={{ width: "100%", height: "100%" }}>
+                <ImageListItem key="Subheader" cols={2}>
+                  <ListSubheader component="div" sx={{ padding: "0px" }}>Uploaded Gallary Images</ListSubheader>
+                </ImageListItem>
+                {gallaryData?.map((item) => (
+                  <ImageListItem key={item.key}>
+                    <img
+                      srcSet={`${item.src}`}
+                      src={`${item.src}`}
+                      alt={item.key}
+                      loading="lazy"
+                      width="300px"
+                    />
+                    <ImageListItemBar
+                      title={item.key}
+                      actionIcon={
+                        <IconButton
+                          sx={{ color: "rgba(255, 0, 0, 0.75)" }}
+                          onClick={() => handleFileDelete(item.key, "gallary")}
                         >
                           <MdDelete />
                         </IconButton>

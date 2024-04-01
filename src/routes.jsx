@@ -3,6 +3,8 @@ import { Navigate } from "react-router-dom";
 import ErrorPage from "./components/pages/ErrorPage";
 import ViewOrders from "./components/pages/Orders/ViewOrders";
 import SingleOrder from "./components/pages/Orders/SingleOrder";
+import ListUsers from "./components/pages/Users/ListUsers";
+import ViewUser from "./components/pages/Users/ViewUser";
 
 const AddCategory = lazy(() =>
   import("./components/pages/Category/AddCategory")
@@ -35,13 +37,15 @@ export function privateRoutes() {
       { path: "/add-play", element: <AddPlay /> },
       { path: "/view-plays", element: <ViewPlays /> },
       { path: "/play", element: <SinglePlay /> },
-
+      // Orders
       { path: "/all-orders", element: <ViewOrders /> },
       { path: "/order", element: <SingleOrder /> },
-
+      // Users
+      { path: "/users", element: <ListUsers /> },
+      { path: "/users/:id", element: <ViewUser /> },
       // Login
       { path: "/login", element: <Navigate to="/" /> },
-      { path: "*", element: <ErrorPage item="Pgae" /> },
+      { path: "*", element: <ErrorPage item="Page" /> },
     ],
   };
 }
