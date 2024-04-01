@@ -78,7 +78,7 @@ export function DeleteModal({ item, open, handleClose, handleDelete }) {
 }
 export function EditModal({ item, open, handleClose, handleEdit }) {
   const [imageData, setImageData] = useState(item.images);
-  const [gallaryData, setGallaryData] = useState(item.gallary);
+  const [galleryData, setGalleryData] = useState(item.gallery);
   const [categories, setCategories] = useState([]);
   const [previewScript, setPreviewScript] = useState(item.preview_script_link);
   const [persualScript, setPersualScript] = useState(item.persual_script_link);
@@ -89,7 +89,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
   const persualScriptRef = useRef();
   const previewScriptRef = useRef();
   const imageRef = useRef();
-  const gallaryRef = useRef();
+  const galleryRef = useRef();
 
   useEffect(() => {
     let config = {
@@ -151,9 +151,9 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
         } else if (type === "images") {
           const newImages = [...imageData, ...response.data.data.images];
           setImageData(newImages);
-        } else if (type === "gallary") {
-          const newImages = [...gallaryData, ...response.data.data.images];
-          setGallaryData(newImages);
+        } else if (type === "gallery") {
+          const newImages = [...galleryData, ...response.data.data.images];
+          setGalleryData(newImages);
         }
       })
       .catch((error) => {
@@ -181,14 +181,14 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
     axios
       .request(config)
       .then(() => {
-        //checking if featured image is deleted or gallary image is delated
+        //checking if featured image is deleted or gallery image is delated
         if (type === "image") {
           const newArray = imageData.filter((item) => item.key !== key);
           setImageData(newArray);
         }
-        else if (type === "gallary") {
-          const newArray = gallaryData.filter((item) => item.key !== key);
-          setGallaryData(newArray);
+        else if (type === "gallery") {
+          const newArray = galleryData.filter((item) => item.key !== key);
+          setGalleryData(newArray);
         }
       })
       .catch((error) => {
@@ -251,7 +251,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
         const { _id, ...imageWithoutId } = image || {};
         return imageWithoutId;
       }),
-      gallary: gallaryData.map((image) => {
+      gallery: galleryData.map((image) => {
         const { _id, ...imageWithoutId } = image || {};
         return imageWithoutId;
       })
@@ -628,7 +628,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                   variant="contained"
                   startIcon={<CloudUploadIcon />}
                 >
-                  <span ref={gallaryRef}>Upload Gallary Images</span>
+                  <span ref={galleryRef}>Upload Gallery Images</span>
                   <input
                     multiple
                     style={{
@@ -644,7 +644,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                     }}
                     type="file"
                     onChange={(event) =>
-                      handleFileUpload(event.target.files, "gallary", gallaryRef)
+                      handleFileUpload(event.target.files, "gallery", galleryRef)
                     }
                   />
                 </Button>
@@ -679,9 +679,9 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
               </ImageList>
               <ImageList sx={{ width: "100%", height: "100%" }}>
                 <ImageListItem key="Subheader" cols={2}>
-                  <ListSubheader component="div" sx={{ padding: "0px" }}>Uploaded Gallary Images</ListSubheader>
+                  <ListSubheader component="div" sx={{ padding: "0px" }}>Uploaded Gallery Images</ListSubheader>
                 </ImageListItem>
-                {gallaryData?.map((item) => (
+                {galleryData?.map((item) => (
                   <ImageListItem key={item.key}>
                     <img
                       srcSet={`${item.src}`}
@@ -695,7 +695,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                       actionIcon={
                         <IconButton
                           sx={{ color: "rgba(255, 0, 0, 0.75)" }}
-                          onClick={() => handleFileDelete(item.key, "gallary")}
+                          onClick={() => handleFileDelete(item.key, "gallery")}
                         >
                           <MdDelete />
                         </IconButton>

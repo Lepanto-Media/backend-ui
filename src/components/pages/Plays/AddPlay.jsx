@@ -65,7 +65,7 @@ function AddPlay() {
 
   const [categories, setCategories] = useState([]);
   const [imageData, setImageData] = useState([]);
-  const [gallaryData, setGallaryData] = useState([]);
+  const [galleryData, setGalleryData] = useState([]);
   const [previewScript, setPreviewScript] = useState({});
   const [persualScript, setPersualScript] = useState({});
   const [originalScript, setOriginalScript] = useState({});
@@ -91,7 +91,7 @@ function AddPlay() {
     });
 
     //setting uploading true to show spinner
-    if (type === "images" || type === "gallary") setImageUploading(true);
+    if (type === "images" || type === "gallery") setImageUploading(true);
     if (type === "preview_script" || type === "persual_script" || type === "original_script") setScriptUploading(true);
 
     let config = {
@@ -108,7 +108,7 @@ function AddPlay() {
       .request(config)
       .then((response) => {
         //setting uploading true to hide spinner
-        if (type === "images" || type === "gallary") setImageUploading(false);
+        if (type === "images" || type === "gallery") setImageUploading(false);
         if (type === "preview_script" || type === "persual_script" || type === "original_script") setScriptUploading(false);
 
         if (type === "preview_script") {
@@ -121,9 +121,9 @@ function AddPlay() {
           const newImages = [...imageData, ...response.data.data.images];
           setImageData(newImages);
         }
-        else if (type === "gallary") {
-          const newImages = [...gallaryData, ...response.data.data.images];
-          setGallaryData(newImages);
+        else if (type === "gallery") {
+          const newImages = [...galleryData, ...response.data.data.images];
+          setGalleryData(newImages);
         }
       })
       .catch((error) => {
@@ -148,14 +148,14 @@ function AddPlay() {
     axios
       .request(config)
       .then(() => {
-        //checking if featured image is deleted or gallary image is delated
+        //checking if featured image is deleted or gallery image is delated
         if (type === "image") {
           const newArray = imageData.filter((item) => item.key !== key);
           setImageData(newArray);
         }
-        else if (type === "gallary") {
-          const newArray = gallaryData.filter((item) => item.key !== key);
-          setGallaryData(newArray);
+        else if (type === "gallery") {
+          const newArray = galleryData.filter((item) => item.key !== key);
+          setGalleryData(newArray);
         }
       })
       .catch((error) => {
@@ -173,7 +173,7 @@ function AddPlay() {
       preview_script_link: previewScript,
       persual_script_link: persualScript,
       images: imageData,
-      gallary: gallaryData,
+      gallery: galleryData,
     });
 
     let config = {
@@ -576,7 +576,7 @@ function AddPlay() {
                   variant="contained"
                   startIcon={<CloudUploadIcon />}
                 >
-                  Upload Gallary Images
+                  Upload Gallery Images
                   <input
                     multiple
                     style={{
@@ -592,7 +592,7 @@ function AddPlay() {
                     }}
                     type="file"
                     onChange={(event) =>
-                      handleFileUpload(event.target.files, "gallary")
+                      handleFileUpload(event.target.files, "gallery")
                     }
                   />
                 </Button>
@@ -641,9 +641,9 @@ function AddPlay() {
               sx={{ width: "100%", height: "100%", justifyContent: "center" }}
             >
               <ImageListItem key="Subheader" cols={4}>
-                <ListSubheader component="div">Uploaded Gallary Images</ListSubheader>
+                <ListSubheader component="div">Uploaded Gallery Images</ListSubheader>
               </ImageListItem>
-              {gallaryData?.map((item) => (
+              {galleryData?.map((item) => (
                 <ImageListItem
                   key={item.key}
                   sx={{ maxWidth: "300px", maxHeight: "300px" }}
@@ -660,7 +660,7 @@ function AddPlay() {
                     actionIcon={
                       <IconButton
                         sx={{ color: "rgba(255, 0, 0, 0.75)" }}
-                        onClick={() => handleFileDelete(item.key, "gallary")}
+                        onClick={() => handleFileDelete(item.key, "gallery")}
                       >
                         <MdDelete />
                       </IconButton>

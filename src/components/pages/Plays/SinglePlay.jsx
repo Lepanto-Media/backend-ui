@@ -34,7 +34,7 @@ function SinglePlay() {
   const [message, setMessage] = useState({ visible: false, message: "" });
   const [notExist, setNotExits] = useState(false);
   const [images, setImages] = useState([]);
-  const [gallary, setGallary] = useState([]);
+  const [gallery, setGallery] = useState([]);
 
   const [modalData, setModalData] = useState({
     isDelete: false,
@@ -117,7 +117,7 @@ function SinglePlay() {
         };
       });
       setImages(imageData);
-      const gallary = playInfo?.gallary?.map((image) => {
+      const gallery = playInfo?.gallery?.map((image) => {
         return {
           original: image.src,
           thumbnail: image.src,
@@ -125,7 +125,7 @@ function SinglePlay() {
           originalHeight: "300px",
         };
       });
-      setGallary(gallary);
+      setGallery(gallery);
     }
   }, [playInfo]);
 
@@ -254,9 +254,9 @@ function SinglePlay() {
             />
           </Box>
           <Box sx={{justifyContent: "start"}}>
-          <b>Gallary Images</b>
+          <b>Gallery Images</b>
             <ImageGallery
-              items={gallary}
+              items={gallery}
               showNav={false}
               showFullscreenButton={false}
               showPlayButton={false}
