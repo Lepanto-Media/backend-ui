@@ -2,9 +2,7 @@ import {
   Box,
   Button,
   Card,
-  FormControlLabel,
   IconButton,
-  Switch,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -36,6 +34,7 @@ function SinglePlay() {
   const [message, setMessage] = useState({ visible: false, message: "" });
   const [notExist, setNotExits] = useState(false);
   const [images, setImages] = useState([]);
+  const [gallery, setGallery] = useState([]);
 
   const [modalData, setModalData] = useState({
     isDelete: false,
@@ -118,6 +117,15 @@ function SinglePlay() {
         };
       });
       setImages(imageData);
+      const gallery = playInfo?.gallery?.map((image) => {
+        return {
+          original: image.src,
+          thumbnail: image.src,
+          originalWidth: "300px",
+          originalHeight: "300px",
+        };
+      });
+      setGallery(gallery);
     }
   }, [playInfo]);
 
@@ -216,6 +224,9 @@ function SinglePlay() {
       <Box
         m="0 20px 50px 20px"
         sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
           background: colors.primary[500],
           paddingBottom: "3em",
         }}
@@ -224,8 +235,8 @@ function SinglePlay() {
         <Box
           sx={{
             display: "flex",
-            gap: "1em",
-            justifyContent: "center",
+            gap: "5em",
+            justifyContent: "start",
             alignItems: "center",
             flexDirection: {
               xs: "column",
@@ -233,7 +244,8 @@ function SinglePlay() {
             },
           }}
         >
-          <Box sx={{ flex: 1 }}>
+          <Box sx={{justifyContent: "start"}}>
+            <b>Featured Images</b>
             <ImageGallery
               items={images}
               showNav={false}
@@ -241,155 +253,160 @@ function SinglePlay() {
               showPlayButton={false}
             />
           </Box>
-          <Box sx={{ flex: 1 }}>
-            <Card
+          <Box sx={{justifyContent: "start"}}>
+          <b>Gallery Images</b>
+            <ImageGallery
+              items={gallery}
+              showNav={false}
+              showFullscreenButton={false}
+              showPlayButton={false}
+            />
+          </Box>
+        </Box>
+
+        <Box sx={{ flex: 1, marginTop: "20px"}}>
+          <Card
+            sx={{
+              flex: 1,
+              padding: "2em",
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+            }}
+          >
+            <Box
               sx={{
-                flex: 1,
-                maxWidth: {
-                  xs: "100%",
-                  md: "90%",
-                },
-                padding: "2em",
                 display: "flex",
                 flexDirection: "column",
-                gap: 2,
+                gap: "1em",
+                pb: "2em",
               }}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1em",
-                  pb: "2em",
-                }}
+              <Typography
+                variant="p"
+                sx={{ fontSize: "2.5em", fontWeight: 600 }}
               >
-                <Typography
-                  variant="p"
-                  sx={{ fontSize: "2.5em", fontWeight: 600 }}
+                Title: {playInfo.play_name}
+              </Typography>
+              <Typography variant="p" sx={{ fontSize: "1.5em" }}>
+                Author: {playInfo.author}
+              </Typography>
+              {playInfo.adapted_author && (
+                <Typography variant="p" sx={{ fontSize: "1.5em" }}>
+                  Adapted Author: {playInfo.adapted_author}
+                </Typography>
+              )}
+              <Typography variant="p" sx={{ fontSize: "1.5em" }}>
+                Category: {categoryInfo.category_name}
+              </Typography>
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <Box
+                  sx={{
+                    border: `1px solid ${colors.primary[100]}`,
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "center",
+                  }}
                 >
-                  Title: {playInfo.play_name}
-                </Typography>
-                <Typography variant="p" sx={{ fontSize: "1.5em" }}>
-                  Author: {playInfo.author}
-                </Typography>
-                {playInfo.adapted_author && (
                   <Typography variant="p" sx={{ fontSize: "1.5em" }}>
-                    Adapted Author: {playInfo.adapted_author}
+                    Male Roles
                   </Typography>
-                )}
-                <Typography variant="p" sx={{ fontSize: "1.5em" }}>
-                  Category: {categoryInfo.category_name}
-                </Typography>
-                <Box sx={{ display: "flex", gap: 2 }}>
-                  <Box
-                    sx={{
-                      border: `1px solid ${colors.primary[100]}`,
-                      flex: 1,
-                      display: "flex",
-                      flexDirection: "column",
-                      textAlign: "center",
-                    }}
-                  >
-                    <Typography variant="p" sx={{ fontSize: "1.5em" }}>
-                      Male Roles
-                    </Typography>
-                    <Typography variant="p" sx={{ fontSize: "1.8em" }}>
-                      {playInfo.male_roles}
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      border: `1px solid ${colors.primary[100]}`,
-                      flex: 1,
-                      display: "flex",
-                      flexDirection: "column",
-                      textAlign: "center",
-                    }}
-                  >
-                    <Typography variant="p" sx={{ fontSize: "1.5em" }}>
-                      Female Roles
-                    </Typography>
-                    <Typography variant="p" sx={{ fontSize: "1.8em" }}>
-                      {playInfo.female_roles}
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      border: `1px solid ${colors.primary[100]}`,
-                      flex: 1,
-                      display: "flex",
-                      flexDirection: "column",
-                      textAlign: "center",
-                    }}
-                  >
-                    <Typography variant="p" sx={{ fontSize: "1.5em" }}>
-                      Either Roles
-                    </Typography>
-                    <Typography variant="p" sx={{ fontSize: "1.8em" }}>
-                      {playInfo.either_roles}
-                    </Typography>
-                  </Box>
+                  <Typography variant="p" sx={{ fontSize: "1.8em" }}>
+                    {playInfo.male_roles}
+                  </Typography>
                 </Box>
                 <Box
-                  width="100%"
-                  m="0 auto"
-                  p="5px"
-                  display="flex"
-                  justifyContent="center"
-                  backgroundColor={
-                    playInfo.active
-                      ? colors.greenAccent[600]
-                      : colors.redAccent[700]
-                  }
-                  borderRadius="5px"
+                  sx={{
+                    border: `1px solid ${colors.primary[100]}`,
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "center",
+                  }}
                 >
-                  <Typography color={colors.primary[100]} sx={{ ml: "5px" }}>
-                    {playInfo.active ? "ACTIVE" : "INACTIVE"}
+                  <Typography variant="p" sx={{ fontSize: "1.5em" }}>
+                    Female Roles
+                  </Typography>
+                  <Typography variant="p" sx={{ fontSize: "1.8em" }}>
+                    {playInfo.female_roles}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    border: `1px solid ${colors.primary[100]}`,
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "center",
+                  }}
+                >
+                  <Typography variant="p" sx={{ fontSize: "1.5em" }}>
+                    Either Roles
+                  </Typography>
+                  <Typography variant="p" sx={{ fontSize: "1.8em" }}>
+                    {playInfo.either_roles}
                   </Typography>
                 </Box>
               </Box>
               <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-evenly",
-                  paddingTop: "2em",
-                }}
+                width="100%"
+                m="0 auto"
+                p="5px"
+                display="flex"
+                justifyContent="center"
+                backgroundColor={
+                  playInfo.active
+                    ? colors.greenAccent[600]
+                    : colors.redAccent[700]
+                }
+                borderRadius="5px"
               >
-                <IconButton
-                  sx={{
-                    background: colors.greenAccent[500],
-                  }}
-                  onClick={() =>
-                    setModalData({
-                      isDelete: false,
-                      isEdit: true,
-                    })
-                  }
-                >
-                  <BiPencil fontSize={30} />
-                </IconButton>
-                <IconButton
-                  sx={{
-                    background: colors.redAccent[500],
-                  }}
-                  onClick={() =>
-                    setModalData({
-                      isDelete: true,
-                      isEdit: false,
-                    })
-                  }
-                >
-                  <MdDelete fontSize={30} />
-                </IconButton>
+                <Typography color={colors.primary[100]} sx={{ ml: "5px" }}>
+                  {playInfo.active ? "ACTIVE" : "INACTIVE"}
+                </Typography>
               </Box>
-            </Card>
-          </Box>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-evenly",
+                paddingTop: "2em",
+              }}
+            >
+              <IconButton
+                sx={{
+                  background: colors.greenAccent[500],
+                }}
+                onClick={() =>
+                  setModalData({
+                    isDelete: false,
+                    isEdit: true,
+                  })
+                }
+              >
+                <BiPencil fontSize={30} />
+              </IconButton>
+              <IconButton
+                sx={{
+                  background: colors.redAccent[500],
+                }}
+                onClick={() =>
+                  setModalData({
+                    isDelete: true,
+                    isEdit: false,
+                  })
+                }
+              >
+                <MdDelete fontSize={30} />
+              </IconButton>
+            </Box>
+          </Card>
         </Box>
         <Box sx={{ paddingTop: 2 }}>
           <Card
             sx={{
               flex: 1,
-              maxWidth: "95%",
               padding: "2em",
               display: "flex",
               flexDirection: "column",
@@ -482,7 +499,7 @@ function SinglePlay() {
                 }}
               >
                 <Link
-                  to={playInfo.preview_script_link.src}
+                  to={playInfo.preview_script_link?.src}
                   target="_blank"
                   rel="noopener norefereer"
                 >
@@ -491,7 +508,7 @@ function SinglePlay() {
                   </Button>
                 </Link>
                 <Link
-                  to={playInfo.persual_script_link.src}
+                  to={playInfo.persual_script_link?.src}
                   target="_blank"
                   rel="noopener norefereer"
                 >
@@ -500,7 +517,7 @@ function SinglePlay() {
                   </Button>
                 </Link>
                 <Link
-                  to={playInfo.orginal_script_link.src}
+                  to={playInfo.orginal_script_link?.src}
                   target="_blank"
                   rel="noopener norefereer"
                 >
