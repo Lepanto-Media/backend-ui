@@ -131,9 +131,9 @@ function SinglePlay() {
 
   //Delete Modal
   const handleDelete = () => {
-    let data = JSON.stringify({
+    let data = {
       active: false,
-    });
+    };
     let config = {
       method: "patch",
       maxBodyLength: Infinity,
