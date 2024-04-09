@@ -54,9 +54,9 @@ const categorySchema = yup.object().shape({
   either_roles: yup.string(),
   run_time: yup.number(),
   maximum_performances: yup.number().required("Required"),
-  performance_right_price: yup.array().required("Required"),
+  performance_right_price: yup.array().min(1, "Performance price required").required("Required"),
   persual_script_price: yup.number().required("Required"),
-  poster_artist: yup.string().required("Required"),
+  poster_artist: yup.string(),
   related_plays: yup.array(),
 });
 
@@ -411,6 +411,7 @@ function AddPlay() {
                       width: 1,
                     }}
                     type="file"
+                    required="true"
                     onChange={(event) =>
                       handleFileUpload(event.target.files, "preview_script")
                     }
@@ -435,6 +436,7 @@ function AddPlay() {
                       width: 1,
                     }}
                     type="file"
+                    required="true"
                     onChange={(event) =>
                       handleFileUpload(event.target.files, "persual_script")
                     }
@@ -445,7 +447,7 @@ function AddPlay() {
                   variant="contained"
                   startIcon={<CloudUploadIcon />}
                 >
-                  Upload Original Script
+                  Upload Performance Script
                   <input
                     style={{
                       clip: "rect(0 0 0 0)",
@@ -459,6 +461,7 @@ function AddPlay() {
                       width: 1,
                     }}
                     type="file"
+                    required="true"
                     onChange={(event) =>
                       handleFileUpload(event.target.files, "original_script")
                     }
@@ -466,7 +469,7 @@ function AddPlay() {
                 </Button>
                 {
                   /* Uploading spinner */
-                  scriptUploading && <CircularProgress size={"25px"} mt={"20px"}/>
+                  scriptUploading && <CircularProgress size={"25px"} mt={"20px"} />
                 }
               </Box>
               <Box sx={{ display: "flex", gap: 2 }}>
@@ -501,6 +504,7 @@ function AddPlay() {
                 />
               </Box>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <span>Performance prices</span>
                 {Array.from({ length: values.maximum_performances }).map(
                   (_, index) => (
                     <Box key={index} sx={{ display: "flex", gap: 2 }}>
@@ -511,33 +515,12 @@ function AddPlay() {
                         label={`Performance #${index + 1}`}
                         onBlur={handleBlur}
                         onChange={(e) => {
-                          setFieldValue(
-                            `performance_right_price[${index}].number_of_performance`,
-                            e.target.value
-                          );
+                          setFieldValue(`performance_right_price[${index}].number_of_performance`, index + 1);
+                          setFieldValue(`performance_right_price[${index}].price`, e.target.value);
                         }}
-                        value={
-                          values.performance_right_price?.[index]
-                            ?.number_of_performance || 0
-                        }
-                        name={`performance_right_price[${index}].number_of_performance`}
-                      />
-                      <TextField
-                        fullWidth
-                        variant="filled"
-                        type="number"
-                        label={`Price #${index + 1}`}
-                        onBlur={handleBlur}
-                        onChange={(e) => {
-                          setFieldValue(
-                            `performance_right_price[${index}].price`,
-                            e.target.value
-                          );
-                        }}
-                        value={
-                          values.performance_right_price?.[index]?.price || 0
-                        }
                         name={`performance_right_price[${index}].price`}
+                        error={!!touched.performance_right_price && !!errors.performance_right_price}
+                        helperText={touched.performance_right_price && errors.performance_right_price}
                       />
                     </Box>
                   )
@@ -566,6 +549,7 @@ function AddPlay() {
                       width: 1,
                     }}
                     type="file"
+                    required="true"
                     onChange={(event) =>
                       handleFileUpload(event.target.files, "images")
                     }
@@ -598,7 +582,7 @@ function AddPlay() {
                 </Button>
                 {
                   /* Uploading spinner */
-                  imageUploading && <CircularProgress size={"25px"}/>
+                  imageUploading && <CircularProgress size={"25px"} />
                 }
               </Box>
 
