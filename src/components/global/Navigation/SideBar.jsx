@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import { tokens } from "../../../theme";
 
 // Icons
-import { RiHome4Line } from "react-icons/ri";
+import { RiHome4Line,RiCoupon2Line } from "react-icons/ri";
 import { BiCategory } from "react-icons/bi";
 import { GiHamburgerMenu, GiDramaMasks } from "react-icons/gi";
 import { BsClipboard } from "react-icons/bs";
@@ -168,7 +168,7 @@ function SideBar() {
             to="/view-plays"
             icon={<GiDramaMasks size={iconSize} color={colors.primary[900]} />}
             selected={selected}
-            className={ selected ? "active" : "" }
+            className={selected ? "active" : ""}
             setSelected={() => setSelected("Plays")}
           />
 
@@ -204,6 +204,13 @@ function SideBar() {
             icon={<AiOutlineUser size={iconSize} color={colors.primary[900]} />}
             selected={selected}
             setSelected={() => setSelected("Users")}
+          />
+          <Item
+            title="Coupons"
+            to="/view-coupons"
+            icon={<RiCoupon2Line size={iconSize} color={colors.primary[900]} />}
+            selected={selected}
+            setSelected={() => setSelected("Coupons")}
           />
 
           {/* CopyRight */}
