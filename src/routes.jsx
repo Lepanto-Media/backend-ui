@@ -23,6 +23,9 @@ const Layout = lazy(() => import("./components/pages/Layout"));
 const Home = lazy(() => import("./components/pages/Home"));
 const Login = lazy(() => import("./components/pages/Login"));
 
+const ViewCoupons=lazy(()=>import("./components/pages/Coupons/ViewCoupons"))
+const AddCoupon=lazy(()=>import("./components/pages/Coupons/AddCoupon"))
+
 export function privateRoutes() {
   return {
     path: "/",
@@ -33,6 +36,14 @@ export function privateRoutes() {
       { path: "/add-category", element: <AddCategory /> },
       { path: "/view-categories", element: <ViewCategories /> },
       { path: "/category", element: <SingleCategory /> },
+
+      //coupons
+      {
+path:'/view-coupons',element:<ViewCoupons/>
+      },
+      {
+        path:"/add-coupon",element:<AddCoupon/>
+      }
       // Plays
       { path: "/add-play", element: <AddPlay /> },
       { path: "/view-plays", element: <ViewPlays /> },
