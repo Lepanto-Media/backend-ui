@@ -1,29 +1,29 @@
 import {
-    Box,
-    Button,
-    Card,
-    FormControlLabel,
-    IconButton,
-    Switch,
-    Typography,
-    useTheme,
-  } from "@mui/material";
-  import React, { useEffect, useState } from "react";
-  import ImageGallery from "react-image-gallery";
-  import { useNavigate, useSearchParams } from "react-router-dom";
-  import { AUTH_TOKEN, BASE_URL } from "../../global/constants";
-  import axios from "axios";
-  import LoadingScreen from "../../global/screens/LoadingScreen";
-  import { BiPencil } from "react-icons/bi";
-  import Header from "../../global/Header";
-  import { DeleteModal, EditModal } from "./CouponModals";
-  import Toast from "../../global/Toast";
-  import { MdDelete } from "react-icons/md";
-  import { tokens } from "../../../theme";
-  import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
-  
+  Box,
+  Button,
+  Card,
+  FormControlLabel,
+  IconButton,
+  Switch,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import ImageGallery from "react-image-gallery";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { AUTH_TOKEN, BASE_URL } from "../../global/constants";
+import axios from "axios";
+import LoadingScreen from "../../global/screens/LoadingScreen";
+import { BiPencil } from "react-icons/bi";
+import Header from "../../global/Header";
+import { DeleteModal, EditModal } from "./CouponModals";
+import Toast from "../../global/Toast";
+import { MdDelete } from "react-icons/md";
+import { tokens } from "../../../theme";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
+
 const SingleCoupon = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -108,7 +108,7 @@ const SingleCoupon = () => {
     let data = JSON.stringify(values);
 
     let config = {
-      method: "patch",
+      method: "put",
       maxBodyLength: Infinity,
       url: `${BASE_URL}/coupon/${searchParams.get("id")}`,
       headers: {
@@ -143,155 +143,157 @@ const SingleCoupon = () => {
       </>
     );
   }
-    return (  <>
-        <EditModal
-          item={couponInfo}
-          open={modalData.isEdit}
-          handleClose={handleClose}
-          handleEdit={handleEdit}
-        />
-        <DeleteModal
-          item={couponInfo}
-          open={modalData.isDelete}
-          handleClose={handleClose}
-          handleDelete={handleDelete}
-        />
-        <Toast data={message} setState={setMessage} />
-  
-        <Box m="0 20px" sx={{ background: colors.primary[500] }}>
-          <Header title="Coupon" subtitle="View Single Coupon" />
-          <Box
+  return (
+    <>
+      <EditModal
+        item={couponInfo}
+        open={modalData.isEdit}
+        handleClose={handleClose}
+        handleEdit={handleEdit}
+      />
+      <DeleteModal
+        item={couponInfo}
+        open={modalData.isDelete}
+        handleClose={handleClose}
+        handleDelete={handleDelete}
+      />
+      <Toast data={message} setState={setMessage} />
+
+      <Box m="0 20px" sx={{ background: colors.primary[500] }}>
+        <Header title="Coupon" subtitle="View Single Coupon" />
+        <Box
+          sx={{
+            display: "flex",
+            gap: "1em",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: {
+              xs: "column",
+              md: "row",
+            },
+          }}
+        >
+          <Card
             sx={{
-              display: "flex",
-              gap: "1em",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: {
-                xs: "column",
-                md: "row",
+              flex: 1,
+              maxWidth: {
+                xs: "100%",
+                md: "60%",
               },
+              padding: "2em",
             }}
           >
-            <Card
+            <Box
               sx={{
-                flex: 1,
-                maxWidth: {
-                  xs: "100%",
-                  md: "60%",
-                },
-                padding: "2em",
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.5em",
+                pb: "2em",
               }}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.5em",
-                  pb: "2em",
-                }}
+              <Typography
+                variant="p"
+                sx={{ fontSize: "2.5em", fontWeight: 600 }}
               >
+                Title: {couponInfo.coupon_code}
+              </Typography>
+              <Typography variant="p" sx={{ fontSize: "1.5em" }}>
+                Discount: {couponInfo.discount}
+              </Typography>
+              <Typography variant="p" sx={{ fontSize: "1.5em" }}>
+                ID: {couponInfo._id}
+              </Typography>
+              <Box
+                width="100%"
+                m="0 auto"
+                p="5px"
+                display="flex"
+                justifyContent="center"
+                backgroundColor={
+                  couponInfo.active
+                    ? colors.greenAccent[600]
+                    : colors.redAccent[700]
+                }
+                borderRadius="5px"
+              >
+                <Typography color={colors.primary[100]} sx={{ ml: "5px" }}>
+                  {couponInfo.active ? "ACTIVE" : "INACTIVE"}
+                </Typography>
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-evenly",
+                paddingTop: "2em",
+              }}
+            >
+              <Button
+                sx={{
+                  background: colors.greenAccent[500],
+                }}
+                onClick={() =>
+                  setModalData({
+                    isDelete: false,
+                    isEdit: true,
+                  })
+                }
+              >
+                {/* <BiPencil fontSize={30} /> */}
                 <Typography
                   variant="p"
-                  sx={{ fontSize: "2.5em", fontWeight: 600 }}
+                  sx={{ fontWeight: 500, color: "#fff", fontSize: "1.2em" }}
                 >
-                  Title: {couponInfo.coupon_code}
+                  Edit
                 </Typography>
-                <Typography variant="p" sx={{ fontSize: "1.5em" }}>
-                  Discount: {couponInfo.discount}
-                </Typography>
-                <Typography variant="p" sx={{ fontSize: "1.5em" }}>
-                  ID: {couponInfo._id}
-                </Typography>
-                <Box
-                  width="100%"
-                  m="0 auto"
-                  p="5px"
-                  display="flex"
-                  justifyContent="center"
-                  backgroundColor={
-                    couponInfo.active
-                      ? colors.greenAccent[600]
-                      : colors.redAccent[700]
+              </Button>
+              {couponInfo.active ? (
+                <Button
+                  sx={{
+                    background: colors.redAccent[500],
+                  }}
+                  onClick={() =>
+                    setModalData({
+                      isDelete: true,
+                      isEdit: false,
+                    })
                   }
-                  borderRadius="5px"
                 >
-                  <Typography color={colors.primary[100]} sx={{ ml: "5px" }}>
-                    {couponInfo.active ? "ACTIVE" : "INACTIVE"}
+                  {/* <FaRegEyeSlash fontSize={30} /> */}
+                  <Typography
+                    variant="p"
+                    sx={{ fontWeight: 500, color: "#fff", fontSize: "1.2em" }}
+                  >
+                    Deactivate
                   </Typography>
-                </Box>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-evenly",
-                  paddingTop: "2em",
-                }}
-              >
+                </Button>
+              ) : (
                 <Button
                   sx={{
                     background: colors.greenAccent[500],
                   }}
                   onClick={() =>
                     setModalData({
-                      isDelete: false,
-                      isEdit: true,
+                      isDelete: true,
+                      isEdit: false,
                     })
                   }
                 >
-                  {/* <BiPencil fontSize={30} /> */}
+                  {/* <FaRegEye fontSize={30} /> */}
                   <Typography
                     variant="p"
                     sx={{ fontWeight: 500, color: "#fff", fontSize: "1.2em" }}
                   >
-                    Edit
+                    Activate
                   </Typography>
                 </Button>
-                {couponInfo.active ? (
-                  <Button
-                    sx={{
-                      background: colors.redAccent[500],
-                    }}
-                    onClick={() =>
-                      setModalData({
-                        isDelete: true,
-                        isEdit: false,
-                      })
-                    }
-                  >
-                    {/* <FaRegEyeSlash fontSize={30} /> */}
-                    <Typography
-                      variant="p"
-                      sx={{ fontWeight: 500, color: "#fff", fontSize: "1.2em" }}
-                    >
-                      Deactivate
-                    </Typography>
-                  </Button>
-                ) : (
-                  <Button
-                    sx={{
-                      background: colors.greenAccent[500],
-                    }}
-                    onClick={() =>
-                      setModalData({
-                        isDelete: true,
-                        isEdit: false,
-                      })
-                    }
-                  >
-                    {/* <FaRegEye fontSize={30} /> */}
-                    <Typography
-                      variant="p"
-                      sx={{ fontWeight: 500, color: "#fff", fontSize: "1.2em" }}
-                    >
-                      Activate
-                    </Typography>
-                  </Button>
-                )}
-              </Box>
-            </Card>
-          </Box>
+              )}
+            </Box>
+          </Card>
         </Box>
-      </> );
-}
- 
+      </Box>
+    </>
+  );
+};
+
 export default SingleCoupon;

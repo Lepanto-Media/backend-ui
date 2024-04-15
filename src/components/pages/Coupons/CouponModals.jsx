@@ -47,7 +47,7 @@ import {
           <Box sx={style}>
             <Typography component="h1">
               Do you want to {item.active ? "deactivate" : "activate"}{" "}
-              {item.category_name}?
+              {item.coupon_code}?
             </Typography>
             <Box
               sx={{
@@ -132,14 +132,15 @@ import {
   
     const isNonMobile = useMediaQuery("(min-width: 600px)");
     const initialValues = {
-      category_name: item.category_name,
-      category_type: item.category_type,
+      coupon_code: item.coupon_code,
+      discount: item.discount,
       active: item.active,
+      percent:item.is_percent,
     };
   
     const categorySchema = yup.object().shape({
-      category_name: yup.string().required("Required"),
-      category_type: yup.string().required("Required"),
+      coupon_code: yup.string().required("Required"),
+      discount: yup.string().required("Required"),
       active: yup.boolean().required("Required"),
     });
     return (
@@ -164,27 +165,39 @@ import {
                     fullWidth
                     variant="filled"
                     type="text"
-                    label="Category Name"
+                    label="Coupon Code"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.category_name}
-                    name="category_name"
-                    error={!!touched.category_name && !!errors.category_name}
-                    helperText={touched.category_name && errors.category_name}
+                    value={values.coupon_code}
+                    name="coupon_code"
+                    error={!!touched.coupon_code && !!errors.coupon_code}
+                    helperText={touched.coupon_code && errors.coupon_code}
+                  />
+                   <TextField
+                    fullWidth
+                    variant="filled"
+                    type="number"
+                    label="Coupon discount"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.discount}
+                    name="discount"
+                    error={!!touched.discount && !!errors.discount}
+                    helperText={touched.discount && errors.discount}
                   />
                   <FormControl fullWidth>
-                    <InputLabel>Category Type</InputLabel>
+                    <InputLabel>Percent</InputLabel>
                     <Select
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.category_type}
-                      name="category_type"
-                      error={!!touched.category_type && !!errors.category_type}
-                      helperText={touched.category_type && errors.category_type}
-                      label="Category Type"
+                      value={values.percent}
+                      name="percent"
+                      error={!!touched.percent && !!errors.percent}
+                      helperText={touched.percent && errors.percent}
+                      label="Percent"
                     >
-                      <MenuItem value={"PLAY"}>PLAY</MenuItem>
-                      <MenuItem value={"TEST"}>TEST</MenuItem>
+                      <MenuItem value={false}>False</MenuItem>
+                      <MenuItem value={true}>True</MenuItem>
                     </Select>
                   </FormControl>
                   <FormControl fullWidth>
@@ -257,7 +270,7 @@ import {
                 </ImageList> */}
                 <Box display="flex" justifyContent="end" mt="20px">
                   <Button type="submit" color="secondary" variant="contained">
-                    Update Category
+                    Update Coupon
                   </Button>
                 </Box>
               </form>
