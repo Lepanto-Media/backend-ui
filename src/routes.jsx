@@ -27,7 +27,9 @@ const ViewCoupons = lazy(() =>
   import("./components/pages/Coupons/viewCoupons")
 );
 const AddCoupon = lazy(() => import("./components/pages/Coupons/AddCoupon"));
-
+const SingleCoupon = lazy(() =>
+  import("./components/pages/Coupons/SingleCoupon")
+);
 export function privateRoutes() {
   return {
     path: "/",
@@ -47,6 +49,10 @@ export function privateRoutes() {
       {
         path: "/add-coupon",
         element: <AddCoupon />,
+      },
+      {
+        path: "/coupon",
+        element: <SingleCoupon />,
       },
       // Plays
       { path: "/add-play", element: <AddPlay /> },
