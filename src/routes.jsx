@@ -5,7 +5,7 @@ import ViewOrders from "./components/pages/Orders/ViewOrders";
 import SingleOrder from "./components/pages/Orders/SingleOrder";
 import ListUsers from "./components/pages/Users/ListUsers";
 import ViewUser from "./components/pages/Users/ViewUser";
-
+import AddUser from "./components/pages/Users/AddUser";
 const AddCategory = lazy(() =>
   import("./components/pages/Category/AddCategory")
 );
@@ -38,22 +38,13 @@ export function privateRoutes() {
       { path: "/", element: <Home /> },
       // Category
       { path: "/add-category", element: <AddCategory /> },
-      { path: "/view-categories", element: <viewCategories /> },
+      { path: "/view-categories", element: <ViewCategories /> },
       { path: "/category", element: <SingleCategory /> },
 
       //coupons
-      {
-        path: "/view-coupons",
-        element: <ViewCoupons />,
-      },
-      {
-        path: "/add-coupon",
-        element: <AddCoupon />,
-      },
-      {
-        path: "/coupon",
-        element: <SingleCoupon />,
-      },
+      { path: "/view-coupons", element: <ViewCoupons /> },
+      { path: "/add-coupon", element: <AddCoupon /> },
+      { path: "/coupon", element: <SingleCoupon /> },
       // Plays
       { path: "/add-play", element: <AddPlay /> },
       { path: "/view-plays", element: <ViewPlays /> },
@@ -62,8 +53,9 @@ export function privateRoutes() {
       { path: "/all-orders", element: <ViewOrders /> },
       { path: "/order", element: <SingleOrder /> },
       // Users
-      { path: "/users", element: <ListUsers /> },
-      { path: "/users/:id", element: <ViewUser /> },
+      { path: "/view-users", element: <ListUsers /> },
+      { path: "/users", element: <ViewUser /> },
+      { path: "/add-user", element: <AddUser /> },
       // Login
       { path: "/login", element: <Navigate to="/" /> },
       { path: "*", element: <ErrorPage item="Page" /> },

@@ -200,7 +200,7 @@ function SideBar() {
           </Typography> */}
           <Item
             title="View Users"
-            to="/users"
+            to="/view-users"
             icon={<AiOutlineUser size={iconSize} color={colors.primary[900]} />}
             selected={selected}
             setSelected={() => setSelected("Users")}
