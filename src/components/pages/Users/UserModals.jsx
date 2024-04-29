@@ -46,7 +46,7 @@ export function DeleteModal({ item, open, handleClose, handleDelete }) {
       >
         <Box sx={style}>
           <Typography component="h1">
-            Do you want to {item.active ? "deactivate" : "activate"} {" "}
+            Do you want to {item.active ? "deactivate" : "activate"}{" "}
             {item.first_name} {item.last_name}?
           </Typography>
           <Box
@@ -137,6 +137,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
     email: item.email,
     active: item.active,
     phone_number: item.phone_number,
+    password: "",
   };
 
   const categorySchema = yup.object().shape({
@@ -209,6 +210,18 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                   name="phone_number"
                   error={!!touched.phone_number && !!errors.phone_number}
                   helperText={touched.phone_number && errors.phone_number}
+                />
+                <TextField
+                  fullWidth
+                  variant="filled"
+                  type="text"
+                  label="New Password"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.password}
+                  name="password"
+                  // error={!!touched.phone_number && !!errors.phone_number}
+                  // helperText={touched.phone_number && errors.phone_number}
                 />
                 {/* <FormControl fullWidth>
                     <InputLabel>Percent</InputLabel>

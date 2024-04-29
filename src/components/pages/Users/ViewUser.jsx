@@ -53,7 +53,7 @@ function ViewUser() {
       .request(config)
       .then((response) => {
         setUserInfo(response?.data?.data);
-       
+        console.log(response?.data?.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -105,6 +105,7 @@ function ViewUser() {
 
   // Edit Modal
   const handleEdit = (values) => {
+    if (values.password == "") delete values.password;
     let data = JSON.stringify(values);
 
     let config = {

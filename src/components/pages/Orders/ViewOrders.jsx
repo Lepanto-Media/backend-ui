@@ -39,6 +39,7 @@ function ViewOrders() {
       .request(config)
       .then((response) => {
         setOrderData(response.data.data);
+        console.log(response?.data?.data);
         setLoading(false);
       })
       .catch((error) => {

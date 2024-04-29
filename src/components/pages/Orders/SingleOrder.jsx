@@ -302,7 +302,6 @@ function SingleOrder() {
               <Typography variant="p" sx={{ fontSize: "1.2em" }}>
                 Customer Notes: {orderInfo?.customer_notes}
               </Typography>
-              {console.log(orderInfo.admin_notes)}
               <Typography variant="p" sx={{ fontSize: "1.2em" }}>
                 Admin Notes:{" "}
                 {orderInfo?.admin_notes.map((note, index) => (
