@@ -4,10 +4,19 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { tokens } from "../../../theme";
 import { Box, Button, Typography, useTheme } from "@mui/material";
+
+import exportCSV from "json-to-csv-export";
+
 export default function Chart(props) {
   const { data, labels, setFrom, setTo, to, from } = props;
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const csvFilename = "chart_data.csv";
+  const csvData = labels?.map((label, index) => ({
+    label,
+    value: data[index],
+  }));
+
   return (
     <>
       <Box
@@ -38,36 +47,20 @@ export default function Chart(props) {
           sx={{
             background: colors.greenAccent[500],
           }}
+          onClick={() =>
+            exportCSV({
+              data: csvData,
+              filename: csvFilename,
+              delimiter: ",",
+              headers: ["label", "value"],
+            })
+          }
         >
           <Typography
             variant="p"
             sx={{ fontWeight: 500, color: "#fff", fontSize: "1.2em" }}
           >
             Export as CSV
-          </Typography>
-        </Button>
-        <Button
-          sx={{
-            background: colors.greenAccent[500],
-          }}
-        >
-          <Typography
-            variant="p"
-            sx={{ fontWeight: 500, color: "#fff", fontSize: "1.2em" }}
-          >
-            Export as json
-          </Typography>
-        </Button>
-        <Button
-          sx={{
-            background: colors.greenAccent[500],
-          }}
-        >
-          <Typography
-            variant="p"
-            sx={{ fontWeight: 500, color: "#fff", fontSize: "1.2em" }}
-          >
-            Export as pdf
           </Typography>
         </Button>
       </Box>
