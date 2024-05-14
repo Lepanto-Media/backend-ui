@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { AUTH_TOKEN, BASE_URL } from "../../global/constants";
 import axios from "axios";
 import { Box, Typography } from "@mui/material";
+import Banner from "../../../assets/banner.png";
 
 function HomeCards() {
   const token = localStorage.getItem(AUTH_TOKEN);
@@ -77,40 +78,87 @@ function HomeCards() {
             sx: "column",
             md: "row",
           },
-          justifyContent: "space-around",
+          justifyContent: "space-between",
         }}
       >
         <Box
           sx={{
-            width: "200px",
-            height: "100px",
-            textAlign: "center",
-            border: "2px solid #000",
+            width: "250px",
+            height: "150px",
+            textAlign: "right",
             borderRadius: "1em",
             flexDirection: "column",
+            backgroundImage: `url(${Banner})`,
+            backgroundSize: 'contain',
+            backgroundRepeat: "no-repeat",
+            padding: "30px"
           }}
+
         >
-          <Typography component="p" sx={{ fontSize: "1.5em", fontWeight: 700 }}>
+          <Typography component="p" sx={{ fontSize: "1.5em", fontWeight: 700, color: "white" }} >
             Total Categories
           </Typography>
-          <Typography component="p" sx={{ fontSize: "1.8em" }}>
+          <Typography component="p" sx={{ fontSize: "1.8em", color: "white" }}>
             {categoryData.no_of_total_documents}
           </Typography>
         </Box>
         <Box
           sx={{
-            width: "200px",
-            height: "100px",
-            textAlign: "center",
-            border: "2px solid #000",
+            width: "250px",
+            height: "150px",
+            textAlign: "right",
             borderRadius: "1em",
             flexDirection: "column",
+            backgroundImage: `url(${Banner})`,
+            backgroundSize: 'contain',
+            backgroundRepeat: "no-repeat",
+            padding: "30px"
           }}
         >
-          <Typography component="p" sx={{ fontSize: "1.5em", fontWeight: 700 }}>
+          <Typography component="p" sx={{ fontSize: "1.5em", fontWeight: 700, color: "white" }}>
             Total Plays
           </Typography>
-          <Typography component="p" sx={{ fontSize: "1.8em" }}>
+          <Typography component="p" sx={{ fontSize: "1.8em", color: "white" }}>
+            {playData.noOfTotalDocuments}
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            width: "250px",
+            height: "150px",
+            textAlign: "right",
+            borderRadius: "1em",
+            flexDirection: "column",
+            backgroundImage: `url(${Banner})`,
+            backgroundSize: 'contain',
+            backgroundRepeat: "no-repeat",
+            padding: "30px"
+          }}
+        >
+          <Typography component="p" sx={{ fontSize: "1.5em", fontWeight: 700, color: "white" }}>
+            Total Orders
+          </Typography>
+          <Typography component="p" sx={{ fontSize: "1.8em", color: "white" }}>
+            {playData.noOfTotalDocuments}
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            width: "250px",
+            height: "150px",
+            textAlign: "right",
+            borderRadius: "1em",
+            flexDirection: "column",
+            backgroundImage: `url(${Banner})`,
+            backgroundSize: 'contain',
+            backgroundRepeat: "no-repeat",
+            padding: "30px"
+          }}
+        >
+          <Typography component="p" sx={{ fontSize: "1.5em", fontWeight: 700, color: "white" }}>
+            Total Users
+          </Typography>
+          <Typography component="p" sx={{ fontSize: "1.8em", color: "white" }}>
             {playData.noOfTotalDocuments}
           </Typography>
         </Box>

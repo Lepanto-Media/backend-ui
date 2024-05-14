@@ -36,15 +36,21 @@ function Home() {
 
   return (
     <>
-      <HomeCards />
-      <Chart
-        data={data}
-        labels={labels}
-        setFrom={setFrom}
-        from={from}
-        to={to}
-        setTo={setTo}
-      />
+      <div className="container">
+        <div className="row">
+          <HomeCards />
+        </div>
+      </div>
+      <div>
+        <Chart
+          data={data}
+          labels={labels}
+          setFrom={setFrom}
+          from={from}
+          to={to}
+          setTo={setTo}
+        />
+      </div>
     </>
   );
 }

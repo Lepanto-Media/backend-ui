@@ -367,7 +367,7 @@ function SingleOrder() {
                       aria-controls="panel1-content"
                       id="panel1-header"
                     >
-                      {play.play_id.play_name}
+                      {play?.play_id?.play_name}
                     </AccordionSummary>
                     <AccordionDetails>
                       {play.is_persual_script_order

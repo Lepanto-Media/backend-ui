@@ -119,7 +119,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
     const originalContent = ref.current.innerHTML;
 
     const container = document.createElement("div");
-    ReactDOM.createRoot(container).render(<CircularProgress color="inherit" size="25px"/>);
+    ReactDOM.createRoot(container).render(<CircularProgress color="inherit" size="25px" />);
 
     ref.current.innerHTML = "";
     ref.current.appendChild(container);
@@ -201,7 +201,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
 
   const initialValues = {
     play_name: item.play_name,
-    category_id: item?.category_id?._id,
+    category_id: item?.category_id?.map(obj => obj._id),
     author: item.author,
     adapted_author: item.adapted_author,
     description: item.description,
@@ -219,7 +219,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
 
   const categorySchema = yup.object().shape({
     play_name: yup.string().required("Required"),
-    category_id: yup.string().required("Required"),
+    category_id: yup.array().required("Required"),
     author: yup.string().required("Required"),
     adapted_author: yup.string(),
     description: yup.string().required("Required"),
@@ -308,6 +308,7 @@ export function EditModal({ item, open, handleClose, handleEdit }) {
                 <FormControl fullWidth>
                   <InputLabel>Category</InputLabel>
                   <Select
+                    multiple
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.category_id}

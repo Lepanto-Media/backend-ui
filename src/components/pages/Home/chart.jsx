@@ -28,25 +28,25 @@ export default function Chart(props) {
             sx: "column",
             md: "row",
           },
-          justifyContent: "space-between",
           alignItems: "center",
-          gap: 1,
+          justifyContent: "flex-end",
+          gap: 2,
         }}
       >
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <span>
-            <strong>From</strong>
-          </span>
-          <DatePicker value={from} onChange={(newVal) => setFrom(newVal)} />
-          <span>
-            <strong>To</strong>
-          </span>
-          <DatePicker value={to} onChange={(newVal) => setTo(newVal)} />
+          <div>
+            <label>From</label>
+            <br />
+            <DatePicker value={from} onChange={(newVal) => setFrom(newVal)} />
+          </div>
+          <div>
+            <label>To</label>
+            <br />
+            <DatePicker value={to} onChange={(newVal) => setTo(newVal)} />
+          </div>
         </LocalizationProvider>
         <Button
-          sx={{
-            background: colors.greenAccent[500],
-          }}
+          sx={{ background: colors.greenAccent[500], padding: "15px", marginTop: "20px" }}
           onClick={() =>
             exportCSV({
               data: csvData,
@@ -73,11 +73,10 @@ export default function Chart(props) {
             sx: "column",
             md: "row",
           },
-          justifyContent: "space-around",
         }}
       >
         <LineChart
-          width={500}
+          width={1100}
           height={300}
           series={[{ data }]}
           xAxis={[{ scaleType: "point", data: labels }]}
