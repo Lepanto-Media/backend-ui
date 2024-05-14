@@ -16,12 +16,13 @@ import axios from "axios";
 import LoadingScreen from "../../global/screens/LoadingScreen";
 import { BiPencil } from "react-icons/bi";
 import Header from "../../global/Header";
-import { DeleteModal, EditModal } from "./UserModals";
+import { DeleteModal, EditModal } from "./CouponModals";
 import Toast from "../../global/Toast";
 import { MdDelete } from "react-icons/md";
 import { tokens } from "../../../theme";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
-function ViewUser() {
+
+const SingleCoupon = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -29,7 +30,7 @@ function ViewUser() {
   const [searchParams] = useSearchParams();
   const token = localStorage.getItem(AUTH_TOKEN);
 
-  const [userInfo, setUserInfo] = useState();
+  const [couponInfo, setCouponInfo] = useState();
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState({ visible: false, message: "" });
   const [notExist, setNotExits] = useState(false);
@@ -43,7 +44,7 @@ function ViewUser() {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${BASE_URL}/user/${searchParams.get("id")}`,
+      url: `${BASE_URL}/coupon/${searchParams.get("id")}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -52,8 +53,7 @@ function ViewUser() {
     axios
       .request(config)
       .then((response) => {
-        setUserInfo(response?.data?.data);
-        console.log(response?.data?.data);
+        setCouponInfo(response.data.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -79,11 +79,11 @@ function ViewUser() {
 
   //Delete Modal
   const handleDelete = () => {
-    let data = JSON.stringify({ active: !userInfo.active });
+    let data = JSON.stringify({ active: !couponInfo.active });
     let config = {
       method: "patch",
       maxBodyLength: Infinity,
-      url: `${BASE_URL}/user/${searchParams.get("id")}`,
+      url: `${BASE_URL}/coupon/${searchParams.get("id")}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -96,7 +96,7 @@ function ViewUser() {
       .then((response) => {
         handleClose();
         setMessage({ visible: true, message: response.data.message });
-        navigate("/users");
+        navigate("/view-coupons");
       })
       .catch((error) => {
         console.log(error);
@@ -105,20 +105,19 @@ function ViewUser() {
 
   // Edit Modal
   const handleEdit = (values) => {
-    if (values.password == "") delete values.password;
     let data = JSON.stringify(values);
 
     let config = {
       method: "put",
       maxBodyLength: Infinity,
-      url: `${BASE_URL}/user/${searchParams.get("id")}`,
+      url: `${BASE_URL}/coupon/${searchParams.get("id")}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
       data: data,
     };
-    console.log(data);
+
     axios
       .request(config)
       .then((response) => {
@@ -147,13 +146,13 @@ function ViewUser() {
   return (
     <>
       <EditModal
-        item={userInfo}
+        item={couponInfo}
         open={modalData.isEdit}
         handleClose={handleClose}
         handleEdit={handleEdit}
       />
       <DeleteModal
-        item={userInfo}
+        item={couponInfo}
         open={modalData.isDelete}
         handleClose={handleClose}
         handleDelete={handleDelete}
@@ -161,7 +160,7 @@ function ViewUser() {
       <Toast data={message} setState={setMessage} />
 
       <Box m="0 20px" sx={{ background: colors.primary[500] }}>
-        <Header title="User" subtitle="View Single User" />
+        <Header title="Coupon" subtitle="View Single Coupon" />
         <Box
           sx={{
             display: "flex",
@@ -196,13 +195,13 @@ function ViewUser() {
                 variant="p"
                 sx={{ fontSize: "2.5em", fontWeight: 600 }}
               >
-                Name: {userInfo.first_name} {userInfo.last_name}
+                Title: {couponInfo.coupon_code}
               </Typography>
               <Typography variant="p" sx={{ fontSize: "1.5em" }}>
-                Email: {userInfo.email}
+                Discount: {couponInfo.discount}
               </Typography>
               <Typography variant="p" sx={{ fontSize: "1.5em" }}>
-                ID: {userInfo._id}
+                ID: {couponInfo._id}
               </Typography>
               <Box
                 width="100%"
@@ -211,14 +210,14 @@ function ViewUser() {
                 display="flex"
                 justifyContent="center"
                 backgroundColor={
-                  userInfo.active
+                  couponInfo.active
                     ? colors.greenAccent[600]
                     : colors.redAccent[700]
                 }
                 borderRadius="5px"
               >
                 <Typography color={colors.primary[100]} sx={{ ml: "5px" }}>
-                  {userInfo.active ? "ACTIVE" : "INACTIVE"}
+                  {couponInfo.active ? "ACTIVE" : "INACTIVE"}
                 </Typography>
               </Box>
             </Box>
@@ -248,7 +247,7 @@ function ViewUser() {
                   Edit
                 </Typography>
               </Button>
-              {userInfo.active ? (
+              {couponInfo.active ? (
                 <Button
                   sx={{
                     background: colors.redAccent[500],
@@ -295,6 +294,6 @@ function ViewUser() {
       </Box>
     </>
   );
-}
+};
 
-export default ViewUser;
+export default SingleCoupon;

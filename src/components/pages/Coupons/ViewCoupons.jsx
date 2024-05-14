@@ -1,27 +1,38 @@
 import { useTheme } from "@emotion/react";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridToolbar,
+  useGridApiContext,
+  useGridSelector,
+  gridPageCountSelector,
+  gridPageSelector,
+} from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
 import { tokens } from "../../../theme";
-import { Box, Button, Typography } from "@mui/material";
-import { FaPlus } from "react-icons/fa6";
+import {
+  Box,
+  Button,
+  Fab,
+  IconButton,
+  Pagination,
+  PaginationItem,
+  Typography,
+} from "@mui/material";
 import { AUTH_TOKEN, BASE_URL } from "../../global/constants";
 import Header from "../../global/Header";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { FaPlus } from "react-icons/fa6";
 import LoadingScreen from "../../global/screens/LoadingScreen";
-import Toast from "../../global/Toast";
-import ErrorPage from "../ErrorPage";
-
-function ViewOrders() {
-  const token = localStorage.getItem(AUTH_TOKEN);
-  const [orderData, setOrderData] = useState([]);
-  const [loading, setLoading] = useState(true);
+const ViewCoupons = () => {
   const navigate = useNavigate();
+  const token = localStorage.getItem(AUTH_TOKEN);
+  const [couponsData, setCouponsData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [message, setMessage] = useState({
-    visible: false,
-    message: "",
-    status: 0,
+  const [paginationModel, setPaginationModel] = useState({
+    pageSize: 10,
+    page: 0,
   });
 
   useEffect(() => {
@@ -29,7 +40,7 @@ function ViewOrders() {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${BASE_URL}/order`,
+      url: `${BASE_URL}/coupon`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -38,66 +49,48 @@ function ViewOrders() {
     axios
       .request(config)
       .then((response) => {
-        setOrderData(response.data.data);
-        console.log(response?.data?.data);
+        console.log(JSON.stringify(response.data));
+        setCouponsData(response?.data?.data);
         setLoading(false);
       })
       .catch((error) => {
         console.log(error);
-        setMessage({
-          visible: true,
-          message: error.response.data.message,
-          status: error.response.data.status,
-        });
       });
   }, []);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
-  // Set Page Title
   useEffect(() => {
-    document.title = "Lepanto, LLC - View Orders";
+    document.title = "Lepanto, LLC - View Coupons";
   }, []);
-
   const columns = [
     {
-      field: "order_id",
-      headerName: "NAME",
+      field: "coupon_code",
+      headerName: "Coupon Code",
       flex: 1,
       cellClassName: "name-column--cell",
       width: 200,
-      renderCell: ({ row: { order_id, _id } }) => {
+      renderCell: ({ row: { coupon_code, _id } }) => {
         return (
           <Link
-            to={`/order?id=${_id}`}
+            to={`/coupon?id=${_id}`}
             style={{
               color: colors.primary[100],
               textDecoration: "none",
             }}
           >
-            <Typography sx={{ ml: "5px" }}>#{order_id}</Typography>
+            <Typography sx={{ ml: "5px" }}>{coupon_code}</Typography>
           </Link>
         );
       },
     },
     {
-      field: "status",
-      headerName: "Order Status",
-      flex: 1,
-      cellClassName: "name-column--cell",
-      width: 200,
-      renderCell: ({ row: { status } }) => {
-        return <Typography sx={{ ml: "5px" }}>{status}</Typography>;
-      },
-    },
-    {
-      field: "payment_completed",
-      headerName: "Payment Status",
+      field: "active",
+      headerName: "Status",
       flex: 1,
       width: 150,
 
-      renderCell: ({ row: { payment_completed } }) => {
+      renderCell: ({ row: { active } }) => {
         return (
           <Box
             width="100%"
@@ -106,26 +99,33 @@ function ViewOrders() {
             display="flex"
             justifyContent="center"
             backgroundColor={
-              payment_completed
-                ? colors.greenAccent[600]
-                : colors.redAccent[700]
+              active ? colors.greenAccent[600] : colors.redAccent[700]
             }
             borderRadius="5px"
           >
             <Typography color={colors.primary[100]} sx={{ ml: "5px" }}>
-              {payment_completed ? "COMPLETE" : "INCOMPLETE"}
+              {active ? "Active" : "Inactive"}
             </Typography>
           </Box>
         );
       },
     },
   ];
-
   return (
     <>
-      <Toast data={message} setState={setMessage} />
       <Box m="0 20px">
-        <Header title="Orders" subtitle="View All Orders" />
+        <Header title="Coupons" subtitle="View All Coupons" />
+        <Button
+          onClick={() => navigate("/add-coupon")}
+          sx={{
+            background: colors.greenAccent[400],
+            color: colors.primary[900],
+            p: 2,
+          }}
+        >
+          {" "}
+          Add New Coupon &nbsp; <FaPlus />
+        </Button>
         <Box
           m="40px 0 0 0"
           height="75vh"
@@ -134,6 +134,9 @@ function ViewOrders() {
             "& .MuiDataGrid-root": {
               border: "none",
               color: "#fff !important",
+            },
+            "& .MuiIconButton-sizeSmall ": {
+              color: "#fff",
             },
             "& .MuiDataGrid-cell": {
               borderBottom: "none",
@@ -171,17 +174,12 @@ function ViewOrders() {
             "& .MuiDataGrid-columnsContainer, .MuiDataGrid-cell": {
               borderBottom: `1px solid ${colors.primary[300]}`,
             },
-            "& MuiTablePagination-root": {
-              color: `${colors.primary[100]} !important`,
-            },
           }}
         >
-          {message.status === 404 ? (
-            <ErrorPage item="Plays" />
-          ) : !loading ? (
+          {!loading ? (
             <DataGrid
-              getRowId={(row) => row.order_id}
-              rows={orderData.order}
+              getRowId={(row) => row._id}
+              rows={couponsData.coupons}
               columns={columns}
               loading={loading}
               components={{ Toolbar: GridToolbar }}
@@ -202,6 +200,6 @@ function ViewOrders() {
       </Box>
     </>
   );
-}
+};
 
-export default ViewOrders;
+export default ViewCoupons;

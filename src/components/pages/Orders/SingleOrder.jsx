@@ -302,7 +302,6 @@ function SingleOrder() {
               <Typography variant="p" sx={{ fontSize: "1.2em" }}>
                 Customer Notes: {orderInfo?.customer_notes}
               </Typography>
-              {console.log(orderInfo.admin_notes)}
               <Typography variant="p" sx={{ fontSize: "1.2em" }}>
                 Admin Notes:{" "}
                 {orderInfo?.admin_notes.map((note, index) => (
@@ -368,7 +367,7 @@ function SingleOrder() {
                       aria-controls="panel1-content"
                       id="panel1-header"
                     >
-                      {play.play_id.play_name}
+                      {play?.play_id?.play_name}
                     </AccordionSummary>
                     <AccordionDetails>
                       {play.is_persual_script_order

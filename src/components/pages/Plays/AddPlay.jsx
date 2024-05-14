@@ -18,7 +18,6 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import Header from "../../global/Header";
-
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { AUTH_TOKEN, BASE_URL } from "../../global/constants";
 import axios from "axios";
@@ -28,7 +27,7 @@ import { MdDelete } from "react-icons/md";
 
 const initialValues = {
   play_name: "",
-  category_id: "",
+  category_id: [],
   author: "",
   adapted_author: "",
   description: "",
@@ -45,7 +44,7 @@ const initialValues = {
 
 const categorySchema = yup.object().shape({
   play_name: yup.string().required("Required"),
-  category_id: yup.string().required("Required"),
+  category_id: yup.array().min(1, "Category required").required("Required"),
   author: yup.string().required("Required"),
   adapted_author: yup.string(),
   description: yup.string().required("Required"),
@@ -265,6 +264,7 @@ function AddPlay() {
               <FormControl fullWidth>
                 <InputLabel>Category</InputLabel>
                 <Select
+                  multiple
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.category_id}
@@ -504,7 +504,7 @@ function AddPlay() {
                 />
               </Box>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <span>Performance prices</span>
+                <span>Performance prices</span>
                 {Array.from({ length: values.maximum_performances }).map(
                   (_, index) => (
                     <Box key={index} sx={{ display: "flex", gap: 2 }}>

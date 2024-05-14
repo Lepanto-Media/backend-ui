@@ -66,33 +66,11 @@ function SinglePlay() {
         }
       });
   };
-  const getCategoryData = () => {
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: `${BASE_URL}/category/${playInfo?.category_id?._id}`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
 
-    axios
-      .request(config)
-      .then((response) => {
-        setCategoryInfo(response.data.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setMessage({
-          vuisible: true,
-          message: error.response.data.message,
-        });
-        if (error.response.data.status === 404) {
-          setNotExits(true);
-          setLoading(false);
-        }
-      })
-      .finally(() => setLoading(false));
+  const getCategoryData = () => {
+    let categories = playInfo?.category_id?.map(obj => obj.category_name)
+    setCategoryInfo(categories.join(', '));
+    setLoading(false);
   };
 
   const handleClose = () =>
@@ -244,7 +222,7 @@ function SinglePlay() {
             },
           }}
         >
-          <Box sx={{justifyContent: "start"}}>
+          <Box sx={{ justifyContent: "start" }}>
             <b>Featured Images</b>
             <ImageGallery
               items={images}
@@ -253,8 +231,8 @@ function SinglePlay() {
               showPlayButton={false}
             />
           </Box>
-          <Box sx={{justifyContent: "start"}}>
-          <b>Gallery Images</b>
+          <Box sx={{ justifyContent: "start" }}>
+            <b>Gallery Images</b>
             <ImageGallery
               items={gallery}
               showNav={false}
@@ -264,7 +242,7 @@ function SinglePlay() {
           </Box>
         </Box>
 
-        <Box sx={{ flex: 1, marginTop: "20px"}}>
+        <Box sx={{ flex: 1, marginTop: "20px" }}>
           <Card
             sx={{
               flex: 1,
@@ -297,7 +275,7 @@ function SinglePlay() {
                 </Typography>
               )}
               <Typography variant="p" sx={{ fontSize: "1.5em" }}>
-                Category: {categoryInfo.category_name}
+                Category: {categoryInfo}
               </Typography>
               <Box sx={{ display: "flex", gap: 2 }}>
                 <Box
