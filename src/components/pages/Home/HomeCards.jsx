@@ -8,6 +8,8 @@ function HomeCards() {
   const token = localStorage.getItem(AUTH_TOKEN);
   const [playData, setplayData] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
+  const [usersData,setUsersData]=useState([]);
+  const [ordersData,setOrdersData]=useState([]);
   const [loading, setLoading] = useState(true);
 
   const [message, setMessage] = useState({
@@ -25,7 +27,6 @@ function HomeCards() {
         Authorization: `Bearer ${token}`,
       },
     };
-
     axios
       .request(config)
       .then((response) => {
@@ -41,6 +42,7 @@ function HomeCards() {
         });
       });
   }, []);
+
   useEffect(() => {
     setLoading(true);
     let config = {
@@ -67,6 +69,61 @@ function HomeCards() {
         });
       });
   }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${BASE_URL}/user`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        setUsersData(response.data.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setMessage({
+          visible: true,
+          message: error.response.data.message,
+          status: error.response.data.status,
+        });
+      });
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${BASE_URL}/order`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        setOrdersData(response.data.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setMessage({
+          visible: true,
+          message: error.response.data.message,
+          status: error.response.data.status,
+        });
+      });
+  }, []);
+
   return (
     <>
       <Box
@@ -139,7 +196,7 @@ function HomeCards() {
             Total Orders
           </Typography>
           <Typography component="p" sx={{ fontSize: "1.8em", color: "white" }}>
-            {playData.noOfTotalDocuments}
+            {ordersData.noOfTotalDocuments}
           </Typography>
         </Box>
         <Box
@@ -159,7 +216,7 @@ function HomeCards() {
             Total Users
           </Typography>
           <Typography component="p" sx={{ fontSize: "1.8em", color: "white" }}>
-            {playData.noOfTotalDocuments}
+            {usersData.length}
           </Typography>
         </Box>
       </Box>
