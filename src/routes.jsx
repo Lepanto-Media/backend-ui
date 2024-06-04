@@ -24,7 +24,7 @@ const Home = lazy(() => import("./components/pages/Home"));
 const Login = lazy(() => import("./components/pages/Login"));
 
 const ViewCoupons = lazy(() =>
-  import("./components/pages/Coupons/viewCoupons")
+  import("./components/pages/Coupons/ViewCoupons")
 );
 const AddCoupon = lazy(() => import("./components/pages/Coupons/AddCoupon"));
 const SingleCoupon = lazy(() =>
